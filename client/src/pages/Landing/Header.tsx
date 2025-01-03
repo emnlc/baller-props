@@ -11,7 +11,7 @@ function Header() {
 
       <div className="relative z-50 px-4 md:pl-56 md:pt-80">
         <h1 className="text-3xl md:text-6xl font-bold mb-4 text-white">
-          View, <span className="text-yellow-400">Analyze</span>, Bet.
+          View, <span className="text-bpYellow">Analyze</span>, Bet.
           <span className="block mt-4 leading-loose">
             Stay Ahead with <span className="text-green-400">Baller Props</span>
             .
@@ -19,7 +19,7 @@ function Header() {
         </h1>
 
         <Link to="/nba">
-          <button className="mt-3 px-8 md:px-12 py-3 bg-red-500 rounded-2xl hover:bg-red-600 text-lg md:text-xl text-white transition-colors">
+          <button className="mt-3 px-8 md:px-12 py-3 bg-bpRed rounded-2xl hover:bg-red-600 text-lg md:text-xl text-white transition-colors">
             Get Started
           </button>
         </Link>

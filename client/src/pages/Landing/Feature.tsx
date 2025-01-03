@@ -12,12 +12,9 @@ function Feature() {
               </h2>
               <p className="text-lg text-gray-300">
                 Quickly view
-                <span className="text-green-400">
-                  {" "}
-                  player prop hit rates
-                </span>{" "}
-                for players based on current season stats.
-                <span className="text-yellow-400">
+                <span className="text-bpGreen"> player prop hit rates</span> for
+                players based on current season stats.
+                <span className="text-bpYellow">
                   Last 10 game and H2H stats
                 </span>
                 also included.
@@ -45,13 +42,10 @@ function Feature() {
               </h2>
               <p className="text-lg text-gray-300">
                 Spreadsheet
-                <span className="text-yellow-400"> available each day </span>
+                <span className="text-bpYellow"> available each day </span>
                 containing the
-                <span className="text-green-400">
-                  {" "}
-                  top 50 player props
-                </span>{" "}
-                based on their last 10 game stats.
+                <span className="text-bpGreen"> top 50 player props</span> based
+                on their last 10 game stats.
               </p>
             </div>
           </div>
