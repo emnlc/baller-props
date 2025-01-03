@@ -39,25 +39,30 @@ for game_title in data:
                 times_hit_over = 0
                 game_stats = []
                 # Loop through the player's last 10 game stats
-                for game in data[game_title][team][player]["full_10_game_logs"]:
+                last_10_games_played = data[game_title][team][player]["full_season_logs"][-10:]
+                if not last_10_games_played:
+                    break 
+                for game in last_10_games_played:
                     game_stats.append(game[market])
                     if game[market] > projected_line:
                         times_hit_over += 1
                 
                 # Calculate the hit percentage
-                hit_percentage = (times_hit_over / 10) * 100
+                hit_percentage = (times_hit_over / len(last_10_games_played)) * 100
                 expected_value = sum(game_stats) / len(game_stats) if game_stats else 0
-
+                game_title_array = str(game_title).split()
+                formatted_game_title = " ".join(game_title_array[0:2])
                 # Add the data for this entry to the list
                 spreadsheet_data.append({
-                    "Game": game_title,
+                    "Game": formatted_game_title,
                     "Player Name": player,
                     "Market": market,
                     "Line": projected_line,
                     "Projection": expected_value,
+                    "Games Played": len(last_10_games_played),
                     "Times Hit Over": times_hit_over,
-                    "Times Hit Under": 10 - times_hit_over,
-                    "Hit Percentage": round(hit_percentage, 2)
+                    "Times Hit Under": len(last_10_games_played) - times_hit_over,
+                    "Hit Percentage": round(hit_percentage, 2),
                 })
 
 # Create a pandas DataFrame from the collected data
@@ -90,20 +95,21 @@ def apply_formatting(file_name, df):
     # Set column widths for better readability
     column_widths = {
         "A": 20,  
-        "B": 20,  
+        "B": 25,  
         "C": 15,  
-        "D": 20,  
-        "E": 20,  
-        "F": 25,  
-        "G": 25,  
-        "H": 25   
+        "D": 15,  
+        "E": 15,  
+        "F": 15,  
+        "G": 15,  
+        "H": 15,
+        "I": 15
     }
 
     for col, width in column_widths.items():
         ws.column_dimensions[col].width = width
 
     # Define the range for the "hit percentage last 10" column (F column)
-    hit_percentage_range = "H2:H" + str(len(df) + 1)  # Adjust for the number of rows
+    hit_percentage_range = "I2:I" + str(len(df) + 1)  # Adjust for the number of rows
 
     # Create a ColorScaleRule to apply a color scale (gradient)
     color_scale = ColorScaleRule(

@@ -15,7 +15,7 @@ def get_player_id(player_name, threshold=80):
     # Initialize cache 
     if _player_cache is None or _player_map is None:
         print("saving player cache...")
-        _player_cache = players.get_players()
+        _player_cache = players.get_active_players()
         _player_map = {
             normalize_text(player["full_name"]): player["id"]
             for player in _player_cache
@@ -34,3 +34,4 @@ def get_player_id(player_name, threshold=80):
         return _player_map[matched_name]
     else:
         return None
+
