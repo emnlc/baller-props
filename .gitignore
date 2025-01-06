@@ -86,3 +86,6 @@ dist-ssr
 backup.txt
 Over_*
 Under_*
+
+firebase-config.ts
+.firebase/
