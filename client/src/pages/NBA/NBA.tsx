@@ -1,24 +1,93 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PropsTable from "./PropsTable";
 import PropsFilter from "./PropsFilter";
 import ModifierFilters from "./ModifierFilters";
+import PropsCard from "./PropsCard";
 
 import { GameLog, gamesData } from "@/Interface";
+import MobileFilters from "./MobileFilters";
+import GamesFilter from "./GamesFilter";
+
+import useWindowSize from "@/hooks/isMobile";
+
+function loadSessionFilters() {
+  const saved = sessionStorage.getItem("nbaFilters");
+  if (saved) {
+    return JSON.parse(saved);
+  }
+
+  return {
+    filterModifiers: { goblin: true, demon: true, standard: true },
+    sortOrder: "desc",
+    sortColumn: "l10HitRate",
+    selectedProps: [],
+    searchQuery: "",
+    selectedGames: [],
+  };
+}
+
+interface FilterModifiers {
+  goblin: boolean;
+  demon: boolean;
+  standard: boolean;
+}
 
 const NBAPage = () => {
-  const [filterModifiers, setFilterModifiers] = useState({
-    goblin: true,
-    demon: true,
-    standard: true,
+  useEffect(() => {
+    document.title = "NBA Lines";
   });
 
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const isMobile = useWindowSize();
+
+  const initialFilters = loadSessionFilters();
+
+  const [filterModifiers, setFilterModifiers] = useState<FilterModifiers>(
+    initialFilters.filterModifiers
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    initialFilters.sortOrder
+  );
   const [sortColumn, setSortColumn] = useState<
     "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate"
-  >("l10HitRate");
-  const [selectedProps, setSelectedProps] = useState<string[]>([]);
+  >(initialFilters.sortColumn);
+  const [selectedProps, setSelectedProps] = useState<string[]>(
+    initialFilters.selectedProps
+  );
+  const [searchQuery, setSearchQuery] = useState<string>(
+    initialFilters.searchQuery
+  );
+  const [selectedGames, setSelectedGames] = useState<string[]>(
+    initialFilters.selectedGames
+  );
+
+  const toggleGameSelection = (game: string) => {
+    setSelectedGames((prevSelected) =>
+      prevSelected.includes(game)
+        ? prevSelected.filter((g) => g !== game)
+        : [...prevSelected, game]
+    );
+  };
+
+  useEffect(() => {
+    const filtersToSave = {
+      filterModifiers,
+      sortOrder,
+      sortColumn,
+      selectedProps,
+      searchQuery,
+      selectedGames,
+    };
+    sessionStorage.setItem("nbaFilters", JSON.stringify(filtersToSave));
+  }, [
+    filterModifiers,
+    sortOrder,
+    sortColumn,
+    selectedProps,
+    searchQuery,
+    selectedGames,
+  ]);
 
   const {
     data: gamesData,
@@ -37,6 +106,14 @@ const NBAPage = () => {
 
   if (isLoading) return <div>Loading . . .</div>;
   if (isError) return <div>Error!</div>;
+
+  const gameTitles = Array.from(
+    new Set(
+      Object.values(gamesData?.players || {}).map(
+        (game) => `${game.away_team} @ ${game.home_team}`
+      )
+    )
+  ).sort();
 
   const calculateHitRate = (
     logs: GameLog[],
@@ -72,7 +149,7 @@ const NBAPage = () => {
       setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     } else {
       setSortColumn(column);
-      setSortOrder("asc");
+      setSortOrder("desc");
     }
   };
 
@@ -108,9 +185,26 @@ const NBAPage = () => {
             : "Unknown Game";
 
           const playerLogs = game
-            ? Object.values(game.teams)
-                .flatMap((team) => Object.entries(team))
-                .find(([name]) => name === playerName)?.[1]?.current_season_logs
+            ? (() => {
+                const currentLogs =
+                  Object.values(game.teams)
+                    .flatMap((team) => Object.entries(team))
+                    .find(([name]) => name === playerName)?.[1]
+                    ?.current_season_logs || [];
+                const previousLogs =
+                  Object.values(game.teams)
+                    .flatMap((team) => Object.entries(team))
+                    .find(([name]) => name === playerName)?.[1]
+                    ?.previous_season_logs || [];
+
+                if (currentLogs.length < 15) {
+                  return [
+                    ...previousLogs.slice(-(15 - currentLogs.length)),
+                    ...currentLogs,
+                  ];
+                }
+                return currentLogs;
+              })()
             : [];
 
           const playerTeam = game
@@ -133,7 +227,7 @@ const NBAPage = () => {
               propType: prop.details.stat_type,
               propLine: prop.details.line_score,
               propOdds: prop.details.odds_type,
-              propsTime: prop.details.board_time,
+              propsTime: prop.details.start_time,
               l10Avg,
               l5HitRate: playerLogs
                 ? calculateHitRate(
@@ -167,9 +261,15 @@ const NBAPage = () => {
           if (row.propOdds === "goblin") return filterModifiers.goblin;
           if (row.propOdds === "demon") return filterModifiers.demon;
           if (row.propOdds === "standard") return filterModifiers.standard;
-          return true;
         })
-
+        .filter((row) =>
+          row.playerName.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .filter((row) =>
+          selectedGames.length > 0
+            ? selectedGames.includes(row.gameTitle)
+            : true
+        )
         .filter((row) =>
           selectedProps.length > 0 ? selectedProps.includes(row.propType) : true
         )
@@ -224,8 +324,13 @@ const NBAPage = () => {
 
   return (
     <div className="nba-container md:container mx-auto">
-      <div className="flex flex-row filter-menu my-8 gap-8">
+      <div className="prop-control-container flex sticky top-0 md:relative flex-col md:flex-row filter-menu bg-[#130e0e] mx-4 md:mx-0 py-4 md:py-0 md:my-8 gap-2">
         {/* PROP OPTIONS */}
+        <GamesFilter
+          availableGames={gameTitles}
+          selectedGames={selectedGames}
+          toggleGameSelection={toggleGameSelection}
+        />
         <PropsFilter
           availableProps={availableProps}
           selectedProps={selectedProps}
@@ -237,15 +342,43 @@ const NBAPage = () => {
           filterModifiers={filterModifiers}
           toggleFilter={toggleFilter}
         />
+        <input
+          type="text"
+          placeholder={"Search for players"}
+          className="rounded-lg h-full font-medium text-sm bg-background-800 py-2 px-4 w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+        {isMobile ? (
+          <>
+            <MobileFilters
+              sortOrder={sortOrder}
+              sortColumn={sortColumn}
+              handleSort={handleSort}
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
 
       {/* PROPS TABLE */}
-      <PropsTable
-        sortedData={sortedData}
-        sortColumn={sortColumn}
-        sortOrder={sortOrder}
-        handleSort={handleSort}
-      />
+      {isMobile ? (
+        <PropsCard
+          sortedData={sortedData}
+          sortColumn={sortColumn}
+          sortOrder={sortOrder}
+          handleSort={handleSort}
+        />
+      ) : (
+        <PropsTable
+          sortedData={sortedData}
+          sortColumn={sortColumn}
+          sortOrder={sortOrder}
+          handleSort={handleSort}
+        />
+      )}
     </div>
   );
 };

@@ -39,13 +39,13 @@ def get_player_stats():
                 for team in data[game_title]:
                     player_stats = defaultdict(lambda: defaultdict(lambda: {"lines": {}, "player_id": None}))
                     players = data[game_title][team]
-                    print(f"Looking at players for {team}")
+                    # print(f"Looking at players for {team}")
                     for player in players:
                         time.sleep(delay)
                         player_id = get_player_id(player_name=str(player), threshold=80)
 
                         if player_id == None:
-                            print(f"No ID for: {str(player)}")
+                            # print(f"No ID for: {str(player)}")
                             continue # skip current player
                         
                         time.sleep(delay)
@@ -57,7 +57,7 @@ def get_player_stats():
                         player_stats[player]["current_season_logs"] = current_season_logs
                         player_stats[player]["previous_season_logs"] = previous_season_logs
                         
-                        print(f"Logs for {player} obtained.")
+                        # print(f"Logs for {player} obtained.")
 
                     todays_stats[game_title]["teams"][team] = player_stats
                     todays_stats[game_title]["home_team"] = game["home_tricode"]

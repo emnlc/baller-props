@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
@@ -19,7 +18,7 @@ function Header() {
         </h1>
 
         <Link to="/nba">
-          <button className="mt-3 px-8 md:px-12 py-3 bg-bpRed rounded-2xl hover:bg-red-600 text-lg md:text-xl text-white transition-colors">
+          <button className="mt-3 px-8 md:px-12 py-3 bg-accent-500 rounded-lg hover:bg-accent-600 text-lg md:text-xl text-white transition-colors">
             Get Started
           </button>
         </Link>

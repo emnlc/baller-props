@@ -20,16 +20,16 @@ const ModifierFilters = (props: Props) => {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="justify-between"
+          className="bg-background-800 h-full text-sm font-semibold justify-between w-full md:min-w-fit hover:bg-opacity-60"
         >
           Modifier Options
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="bg-neutral-800 text-white font-medium">
+      <PopoverContent className="bg-background-800 text-white font-medium">
         <div className="flex flex-col gap-2">
-          <label className="flex justify-between items-center text-base hover:bg-neutral-600 px-2">
+          <label className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2">
             <span>Goblin</span>
             <input
               type="checkbox"
@@ -37,7 +37,7 @@ const ModifierFilters = (props: Props) => {
               onChange={() => props.toggleFilter("goblin")}
             />
           </label>
-          <label className="flex justify-between items-center text-base hover:bg-neutral-600 px-2">
+          <label className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2">
             <span>Demon</span>
             <input
               type="checkbox"
@@ -45,7 +45,7 @@ const ModifierFilters = (props: Props) => {
               onChange={() => props.toggleFilter("demon")}
             />
           </label>
-          <label className="flex justify-between items-center text-base hover:bg-neutral-600 px-2">
+          <label className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2">
             <span>Standard</span>
             <input
               type="checkbox"

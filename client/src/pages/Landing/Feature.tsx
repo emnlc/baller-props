@@ -1,9 +1,7 @@
-import React from "react";
-
 function Feature() {
   return (
     <>
-      <section className="bg-black text-white py-16">
+      <section className=" text-white py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
             <div className="flex flex-col justify-center text-center md:text-left">

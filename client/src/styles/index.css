@@ -5,8 +5,31 @@
 html,
 body {
   font-family: "IBM Plex Sans JP", sans-serif;
-  background-color: #1e1e1f;
+  background-color: #130e0e;
   color: white;
+}
+
+@layer utilities {
+  .table-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+    border-radius: 100%;
+  }
+
+  .table-scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #270c0e;
+  }
+
+  .table-scrollbar::-webkit-scrollbar-thumb {
+    background: #130607;
+    border-radius: 100vh;
+    border: 3px solid #130607;
+  }
+
+  .table-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #130607;
+  }
 }
 
 @layer base {

@@ -1,26 +1,26 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-neutral-950 text-white py-8">
+    <footer className="bg-background-950 text-white py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:justify-end items-center md:items-center px-8">
-          <div className="font-bold text-center md:text-right">
-            Available Sports
-          </div>
+        <div className="flex flex-col md:flex-row md:justify-end items-center md:items-center ">
+          <div className="font-bold md:text-right">Available Sports</div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mt-4 space-y-4 md:space-y-0">
-          <div className="flex space-x-4 justify-center">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mt-4 ">
+          <div className="flex justify-center">
             <span></span>
             <span></span>
           </div>
 
-          <div className="flex space-x-4 justify-center">
-            <span>NBA</span>
-            <span>NFL</span>
-            <span>MLB</span>
-            <span>WNBA</span>
+          <div className="flex ">
+            <Link
+              className="transition-all text-white hover:text-accent-500"
+              to={"/nba"}
+            >
+              <span>NBA</span>
+            </Link>
           </div>
         </div>
 

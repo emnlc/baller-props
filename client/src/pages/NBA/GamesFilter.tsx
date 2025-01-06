@@ -3,17 +3,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 
-type Props = {
-  availableProps: string[];
-  selectedProps: string[];
-  handlePropSelection: (prop: string) => void;
+type GameFilterProps = {
+  availableGames: string[];
+  selectedGames: string[];
+  toggleGameSelection: (game: string) => void;
 };
 
-const PropsFilter = (props: Props) => {
+const GamesFilter = ({
+  availableGames,
+  selectedGames,
+  toggleGameSelection,
+}: GameFilterProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,24 +28,23 @@ const PropsFilter = (props: Props) => {
           aria-expanded={open}
           className="bg-background-800 h-full text-sm font-semibold justify-between w-full md:min-w-fit hover:bg-opacity-60"
         >
-          Filter by Prop Types
+          Available Games
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="bg-background-800 text-white font-medium">
         <div className="flex flex-col gap-2">
-          {props.availableProps.map((prop) => (
+          {availableGames.map((game) => (
             <label
-              key={prop}
-              className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2 "
+              key={game}
+              className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2"
             >
-              <span>{prop}</span>
+              <span>{game}</span>
               <input
                 type="checkbox"
-                value={prop}
-                onChange={() => props.handlePropSelection(prop)}
-                checked={props.selectedProps.includes(prop)}
+                checked={selectedGames.includes(game)}
+                onChange={() => toggleGameSelection(game)}
               />
             </label>
           ))}
@@ -51,4 +54,4 @@ const PropsFilter = (props: Props) => {
   );
 };
 
-export default PropsFilter;
+export default GamesFilter;

@@ -25,7 +25,7 @@ interface PropDetail {
   stat_type: string;
   line_score: number;
   odds_type: string;
-  board_time: string;
+  start_time: string;
 }
 
 interface PlayerProp {
@@ -38,6 +38,7 @@ type PlayerProps = PlayerProp[];
 export interface TeamPlayer {
   player_id: number;
   current_season_logs: GameLog[];
+  previous_season_logs: GameLog[];
 }
 
 export interface Team {

@@ -1,10 +1,13 @@
 import { useLocation } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 import { GameLog } from "@/Interface";
 
-import StatsChart from "./StatsChart";
+import StatsChart from "./Chart/StatsChart";
+import PlayerSidebar from "./Sidebar/PlayerSidebar";
+import PlayerLogsTable from "./LogsTable/PlayerLogsTable";
 
 type PlayerLogsResponse = {
   player_id: number;
@@ -36,6 +39,10 @@ const PlayerPage = () => {
     }, []);
   };
 
+  useEffect(() => {
+    document.title = `${playerData.playerName} Stats`;
+  });
+
   const playerData = useQueryData();
 
   const {
@@ -49,7 +56,9 @@ const PlayerPage = () => {
     queryKey: ["playerLogs"],
     queryFn: async () => {
       const response = await fetch(
-        `http://192.168.0.77:8080/api/nba/player-logs/${playerData.playerName}/${playerData.playerTeam}/${playerData.gameKey}`
+        `${import.meta.env.VITE_PLAYER_STATS_URL}/${playerData.playerName}/${
+          playerData.playerTeam
+        }/${playerData.gameKey}`
       );
       if (!response.ok) throw new Error("Network response was not ok");
       return response.json();
@@ -73,41 +82,70 @@ const PlayerPage = () => {
       })
     : "Invalid date";
 
+  const getOpponentTeam = (
+    gameTitle: string | null,
+    playerTeam: string | null
+  ) => {
+    if (!gameTitle || !playerTeam) return "";
+
+    const separator = gameTitle.includes("@") ? "@" : "vs.";
+    const teams = gameTitle.split(separator).map((team) => team.trim());
+
+    return teams[0] === playerTeam ? teams[1] : teams[0];
+  };
+
+  const getCombinedLogs = (count: number) => {
+    if (current_season_logs.length < count) {
+      const additionalLogs = previous_season_logs.slice(
+        -(count - current_season_logs.length)
+      );
+      return [...additionalLogs, ...current_season_logs];
+    }
+    return current_season_logs.slice(-count);
+  };
+
+  const last15Logs = getCombinedLogs(15);
+
   return (
     <>
-      <div className="md:container my-16 mx-auto">
-        <div className="flex flex-col my-8">
-          <h1 className="text-4xl font-black">
+      <div className="md:container mb-16 mt-8 mx-4 md:mx-auto flex flex-col gap-2 ">
+        <div className="flex flex-col md:mx-0">
+          <Link
+            className="transition-all font-bold flex bg-accent-400 w-fit px-4 py-1 rounded-lg hover:bg-opacity-80 mb-4 items-center justify-center"
+            to={"/nba"}
+          >
+            ← Back
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold">
             {playerData.playerName}{" "}
-            <span className="font-normal text-base">
+            <span className="font-normal text-sm md:text-base">
               {playerData.playerTeam}
             </span>
           </h1>
-          <h2 className="font-bold text-lg">
+          <h2 className="font-bold font-base md:text-lg">
             {playerData.gameTitle} - {cleanTime.toUpperCase()} EST
           </h2>
         </div>
 
-        <div className="chart-container">
-          <p className="font-bold text-2xl">{playerData.propType}</p>
-
+        <div className="flex gap-2 xl:flex-row flex-col stats-container ">
           <StatsChart
             current_season_logs={current_season_logs}
             previous_season_logs={previous_season_logs}
             prop={playerData.propType}
             propLine={playerData.propLine}
           />
+          <PlayerSidebar
+            current_season_logs={current_season_logs}
+            selected_prop={playerData.propType}
+            prop_line={playerData.propLine}
+            opponent={getOpponentTeam(
+              playerData.gameTitle,
+              playerData.playerTeam
+            )}
+          ></PlayerSidebar>
         </div>
 
-        <p>Prop Line: {playerData.propLine}</p>
-        <p>Odds: {playerData.propOdds}</p>
-        <p>L10 Avg: {playerData.l10Avg?.toFixed(2) ?? "N/A"}</p>
-        <p>L5 Hit Rate: {playerData.l5HitRate}%</p>
-        <p>L10 Hit Rate: {playerData.l10HitRate}%</p>
-        <p>L15 Hit Rate: {playerData.l15HitRate}%</p>
-        <p>L15 Hit Rate: {playerData.l15HitRate}%</p>
-        <p>Game Key: {playerData.gameKey}</p>
-        <p>{previous_season_logs.length}</p>
+        <PlayerLogsTable logs={last15Logs} />
       </div>
     </>
   );
