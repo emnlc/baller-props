@@ -12,6 +12,8 @@ import GamesFilter from "./GamesFilter";
 
 import useWindowSize from "@/hooks/isMobile";
 
+import { HashLoader } from "react-spinners";
+
 function loadSessionFilters() {
   const saved = sessionStorage.getItem("nbaFilters");
   if (saved) {
@@ -104,7 +106,14 @@ const NBAPage = () => {
     refetchInterval: 2 * 60 * 1000,
   });
 
-  if (isLoading) return <div>Loading . . .</div>;
+  if (isLoading)
+    return (
+      <>
+        <div className="flex justify-center py-4 md:py-0 md:my-8">
+          <HashLoader color="#da8b91" size={50} />
+        </div>
+      </>
+    );
   if (isError) return <div>Error!</div>;
 
   const gameTitles = Array.from(

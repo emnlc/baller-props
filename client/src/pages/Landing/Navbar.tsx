@@ -14,8 +14,8 @@ const Navbar = () => {
         <Link to={"/nba"} className="hover:text-accent-500 transition-all">
           NBA
         </Link>
-        <span className="text-gray-400 opacity-75 transition-all">WNBA</span>
-        <span className="text-gray-400 opacity-75 transition-all">CBB</span>
+        {/* <span className="text-gray-400 opacity-75 transition-all">WNBA</span>
+        <span className="text-gray-400 opacity-75 transition-all">CBB</span> */}
       </div>
     </div>
   );

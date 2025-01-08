@@ -133,6 +133,7 @@ const PlayerPage = () => {
             previous_season_logs={previous_season_logs}
             prop={playerData.propType}
             propLine={playerData.propLine}
+            propOdd={playerData.propOdds}
           />
           <PlayerSidebar
             current_season_logs={current_season_logs}

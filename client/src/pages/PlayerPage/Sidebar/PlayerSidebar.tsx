@@ -28,7 +28,7 @@ const PlayerSidebar = (props: Props) => {
           <h1 className="md:text-xl font-medium">{props.selected_prop}</h1>
         </div>
 
-        <div className="flex flex-row md:flex-col pb-2 md:pb-0 gap-2 md:gap-8 mb-2 mt-6 md:my-8 overflow-x-scroll md:overflow-hidden">
+        <div className="flex flex-row xl:flex-col pb-2 md:pb-0 gap-2 md:gap-8 mb-2 mt-6 md:my-8 overflow-x-scroll md:overflow-hidden">
           <AverageDetails
             logs={props.current_season_logs}
             title="2024-25"

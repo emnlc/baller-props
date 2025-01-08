@@ -83,6 +83,12 @@ const PropsTable = ({
     setVisibleData(nextData);
   }, [currentPage, sortedData]);
 
+  const getButtonClass = (column: string) => {
+    return `flex items-center gap-2 ${
+      sortColumn === column ? "text-accent-300" : "text-white"
+    }`;
+  };
+
   return (
     <>
       {sortedData.length > 0 ? (
@@ -90,37 +96,41 @@ const PropsTable = ({
           <Table className="bg-background-900 text-xs md:text-sm">
             <TableHeader className="bg-background-800 text-center">
               <TableRow>
-                <TableHead className="font-medium">Player</TableHead>
-                <TableHead className="font-medium">Prop Type</TableHead>
-                <TableHead className="font-medium">Prop Line</TableHead>
-                <TableHead className="font-medium">
-                  <button onClick={() => handleSort("l10Avg")}>
-                    L10 Avg{" "}
-                    {sortColumn === "l10Avg" &&
-                      (sortOrder === "asc" ? "↑" : "↓")}
-                  </button>
-                </TableHead>
-                <TableHead className="font-medium">
-                  <button onClick={() => handleSort("l5HitRate")}>
-                    L5{" "}
-                    {sortColumn === "l5HitRate" &&
-                      (sortOrder === "asc" ? "↑" : "↓")}
-                  </button>
-                </TableHead>
-                <TableHead className="font-medium">
-                  <button onClick={() => handleSort("l10HitRate")}>
-                    L10{" "}
-                    {sortColumn === "l10HitRate" &&
-                      (sortOrder === "asc" ? "↑" : "↓")}
-                  </button>
-                </TableHead>
-                <TableHead className="font-medium">
-                  <button onClick={() => handleSort("l15HitRate")}>
-                    L15{" "}
-                    {sortColumn === "l15HitRate" &&
-                      (sortOrder === "asc" ? "↑" : "↓")}
-                  </button>
-                </TableHead>
+                <TableHead className="font-bold">Player</TableHead>
+                <TableHead className="font-bold">Prop Type</TableHead>
+                <TableHead className="font-bold">Prop Line</TableHead>
+                {[
+                  { column: "l10Avg", label: "L10 Avg" },
+                  { column: "l5HitRate", label: "L5" },
+                  { column: "l10HitRate", label: "L10" },
+                  { column: "l15HitRate", label: "L15" },
+                ].map(({ column, label }) => (
+                  <TableHead key={column} className="font-bold">
+                    <button
+                      onClick={() =>
+                        handleSort(
+                          column as
+                            | "l10Avg"
+                            | "l5HitRate"
+                            | "l10HitRate"
+                            | "l15HitRate"
+                        )
+                      }
+                      className={getButtonClass(column)}
+                    >
+                      {label}{" "}
+                      {sortColumn === column ? (
+                        sortOrder === "asc" ? (
+                          <span>↑</span>
+                        ) : (
+                          <span>↓</span>
+                        )
+                      ) : (
+                        <span>↓</span>
+                      )}
+                    </button>
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
 
@@ -226,14 +236,12 @@ const PropsTable = ({
             </TableBody>
           </Table>
 
-          {/* loading icon */}
           {isLoading && (
             <div className="text-center flex flex-row items-center justify-center py-8 text-sm text-accent-300 w-full">
               <SyncLoader color="#da8b91" size={15} />
             </div>
           )}
 
-          {/* infinite scroll trigger */}
           <div ref={bottomRef} style={{ height: "1px" }} />
         </>
       ) : (
