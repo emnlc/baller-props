@@ -6,6 +6,10 @@ from nba.get_games import get_games
 from nba.nba_stats import get_player_stats
 from nba.player_lines import player_lines
 
+import json
+import os
+from supabase import create_client
+
 app = FastAPI()
 
 # allowed domains
@@ -24,12 +28,14 @@ STATS_CACHE = {
     "lines": {}
 }
 
+supabase = create_client(os.getenv("PROJECT_URL"), os.getenv("API_KEY"))
+
 @app.on_event("startup")
-@repeat_every(seconds=300) # every ten minutes
+@repeat_every(seconds=420) # seven minute interval
 def cache_player_stats():
     global STATS_CACHE
     print("Fetching stats. . .")
-    STATS_CACHE["players"] = get_player_stats()
+    STATS_CACHE["players"] = get_player_stats(supabase=supabase, current_cache=STATS_CACHE["players"])
     print("Finished caching")
     
 @app.on_event("startup")
@@ -49,24 +55,20 @@ def todays_games():
 def player_stats():
     return STATS_CACHE
 
-@app.get("/api/nba/player-logs/{player_name}/{player_team}/{game_key}")
-def get_player_logs(player_name: str, player_team: str, game_key: str):
-    # Fetch the player data from the cache
-    player_data = STATS_CACHE["players"][game_key]["teams"][player_team][player_name]
-    
-    current_season_logs = player_data.get("current_season_logs", [])
-    previous_season_logs = player_data.get("previous_season_logs", [])
-    player_id = player_data.get("player_id", -1)
+@app.get("/api/nba/player-logs/{player_name}/{player_team}")
+def get_player_logs(player_name: str, player_team: str):
+    res = supabase.table("NBA").select("previous_season_game_logs, current_season_game_logs, id").eq("player_name", player_name).eq("team_tricode", player_team).execute()
 
-    return {
-        "player_id": player_id,
-        "current_season_logs": current_season_logs,
-        "previous_season_logs": previous_season_logs
-    }
-    
+    if res.data:
+        return {
+            "player_id": res.data[0]["id"],
+            "current_season_logs": json.loads(res.data[0]["current_season_game_logs"]),
+            "previous_season_logs": json.loads(res.data[0]["previous_season_game_logs"]),
+        }
+
 ##############################
 # FOR LOCAL DEVELOPMENT ONLY #
 ##############################
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8080)

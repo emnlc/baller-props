@@ -6,3 +6,4 @@ RapidFuzz==3.10.1
 uvicorn==0.32.1
 python-dotenv==1.0.1
 pandas==2.2.3
+supabase

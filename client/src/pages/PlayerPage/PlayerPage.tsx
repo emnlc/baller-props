@@ -58,7 +58,7 @@ const PlayerPage = () => {
       const response = await fetch(
         `${import.meta.env.VITE_PLAYER_STATS_URL}/${playerData.playerName}/${
           playerData.playerTeam
-        }/${playerData.gameKey}`
+        }`
       );
       if (!response.ok) throw new Error("Network response was not ok");
       return response.json();

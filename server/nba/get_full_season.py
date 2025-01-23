@@ -1,5 +1,6 @@
 from nba_api.stats.endpoints import playergamelogs
-from datetime import datetime
+import os
+
 
 # get a seasons full game_logs
 def process_game_logs(player_id, season):
@@ -16,7 +17,6 @@ def process_game_logs(player_id, season):
             game_logs_df = game_logs.get_data_frames()[0]
             
             if game_logs_df.empty:
-                # print(f"No game data available for {season_type} for player {player_id} in season {season}.")
                 continue
             
             # Extract game stats in reverse order
