@@ -4,8 +4,6 @@ from nba_api.stats.endpoints import PlayerGameLogs
 from supabase import Client
 import json
 
-
-
 def get_missing_game_logs(player_id, date_from):
     season_types = ["Playoffs", "Regular Season", "Pre Season"]
     game_logs = []
@@ -56,7 +54,12 @@ def get_missing_game_logs(player_id, date_from):
 def get_missing_games(supabase: Client, player_id):
     updated = False
 
+    # Fetch the current game logs and last updated date from Supabase
     res = supabase.table("NBA").select("current_season_game_logs, last_updated").eq("id", player_id).execute()
+    if not res.data:
+        print(f"No data found for player ID {player_id}")
+        return updated
+
     last_updated_str = res.data[0]["last_updated"]
     last_updated = datetime.strptime(last_updated_str, "%Y-%m-%d").date()
     
@@ -64,23 +67,31 @@ def get_missing_games(supabase: Client, player_id):
     current_date = datetime.now(pst_timezone).date()
     
     if last_updated >= current_date:
-        # print(f"{player_id} already updated")
+        print(f"{player_id} already updated")
         return updated
     
     date_from = last_updated.strftime("%m/%d/%Y")
     missing_game_logs = get_missing_game_logs(player_id, date_from=date_from)
     
     if missing_game_logs:
-        if res.data:
-            supabase_game_log_text = res.data[0]["current_season_game_logs"]
-            supabase_game_logs = json.loads(supabase_game_log_text)
+        supabase_game_log_text = res.data[0]["current_season_game_logs"]
+        supabase_game_logs = json.loads(supabase_game_log_text)
+        
+        # Check if the last game log in Supabase matches the first new game log
+        if supabase_game_logs and supabase_game_logs[-1]["GAME_DATE"] != missing_game_logs[0]["GAME_DATE"]:
+            updated = True
+            # Extend the list of games
+            supabase_game_logs.extend(missing_game_logs)
+            updated_logs = json.dumps(supabase_game_logs)
             
-            if supabase_game_logs[-1]["GAME_DATE"] != missing_game_logs[0]["GAME_DATE"]:
-                updated = True
-                supabase_game_logs.append(missing_game_logs)
-                updated_logs = json.dumps(supabase_game_logs)
+            # Update the Supabase table
+            try:
                 supabase.table("NBA").update({
                     "current_season_game_logs": updated_logs,
-                    "last_updated": current_date
+                    "last_updated": current_date.isoformat()
                 }).eq("id", player_id).execute()
+                print(f"Successfully updated player ID {player_id}")
+            except Exception as e:
+                print(f"Error updating player ID {player_id}: {e}")
+    
     return updated
