@@ -17,11 +17,15 @@ RUN pip install -r requirements.txt
 # Copy the rest of the backend code
 COPY . .
 
+# Copy the Bright Data certificate into the trusted store
+COPY brightdata.crt /usr/local/share/ca-certificates/brightdata.crt
+
 # Update the system-wide certificate store
 RUN update-ca-certificates --fresh
+
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 EXPOSE 8080
 
 # Specify default command
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
-

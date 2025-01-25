@@ -8,3 +8,6 @@ services:
       - .env
     environment:
       - TZ=America/Phoenix
+      - HTTP_PROXY=${BD_HTTP_PROXY}
+      - HTTPS_PROXY=${BD_HTTP_PROXY}
+      - NO_PROXY=${SERVER_NO_PROXY}

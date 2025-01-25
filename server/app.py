@@ -31,12 +31,12 @@ STATS_CACHE = {
 supabase = create_client(os.getenv("PROJECT_URL"), os.getenv("API_KEY"))
 
 @app.on_event("startup")
-@repeat_every(seconds=420) # seven minute interval
+@repeat_every(seconds=600) # 10 minute interval
 def cache_player_stats():
     global STATS_CACHE
     print("Fetching stats. . .")
     STATS_CACHE["players"] = get_player_stats(supabase=supabase, current_cache=STATS_CACHE["players"])
-    print("Finished caching")
+    print("Finished caching stats.")
     
 @app.on_event("startup")
 @repeat_every(seconds=180)
@@ -44,7 +44,7 @@ def update_player_lines():
     global STATS_CACHE
     print("Updating player lines. . .")
     STATS_CACHE["lines"] = player_lines()
-    print("Finished caching")
+    print("Finished caching lines.")
 
 @app.get("/api/nba/games")
 def todays_games():
