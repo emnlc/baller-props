@@ -26,19 +26,19 @@ const GamesFilter = ({
         <Button
           role="combobox"
           aria-expanded={open}
-          className="bg-background-800 h-full text-sm font-semibold justify-between w-full md:min-w-fit hover:bg-opacity-60"
+          className="bg-background-800 h-full text-sm font-semibold justify-between w-44 md:w-48 hover:bg-opacity-60"
         >
           Available Games
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="bg-background-800 text-white font-medium">
+      <PopoverContent className="bg-background-900 w-44 md:w-48 text-white font-normal">
         <div className="flex flex-col gap-2">
           {availableGames.map((game) => (
             <label
               key={game}
-              className="flex rounded-lg justify-between items-center text-sm md:text-base hover:bg-background-600 px-2"
+              className="flex rounded-sm justify-between items-center text-sm hover:bg-background-600 px-2"
             >
               <span>{game}</span>
               <input
@@ -48,6 +48,16 @@ const GamesFilter = ({
               />
             </label>
           ))}
+        </div>
+        <div className="flex flex-row gap-1 mt-2">
+          <Button
+            onClick={() => {
+              setOpen(!open);
+            }}
+            className="w-full text-xs hover:bg-background-700 transition-colors bg-background-800"
+          >
+            Close
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

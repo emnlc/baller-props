@@ -11,6 +11,7 @@ import MobileFilters from "./MobileFilters";
 import GamesFilter from "./GamesFilter";
 
 import useWindowSize from "@/hooks/isMobile";
+import { Input } from "@/components/ui/input";
 
 import { HashLoader } from "react-spinners";
 
@@ -52,7 +53,7 @@ const NBAPage = () => {
     initialFilters.sortOrder
   );
   const [sortColumn, setSortColumn] = useState<
-    "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate"
+    "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
   >(initialFilters.sortColumn);
   const [selectedProps, setSelectedProps] = useState<string[]>(
     initialFilters.selectedProps
@@ -110,7 +111,7 @@ const NBAPage = () => {
     return (
       <>
         <div className="flex justify-center py-4 md:py-0 md:my-8">
-          <HashLoader color="#da8b91" size={50} />
+          <HashLoader color="#0284c7" size={50} />
         </div>
       </>
     );
@@ -152,7 +153,7 @@ const NBAPage = () => {
   };
 
   const handleSort = (
-    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate"
+    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
   ) => {
     if (sortColumn === column) {
       setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
@@ -170,6 +171,16 @@ const NBAPage = () => {
     );
   };
 
+  // New function to handle "Select All"
+  const handleSelectAll = () => {
+    setSelectedProps([...availableProps]);
+  };
+
+  // New function to handle "Deselect All"
+  const handleDeselectAll = () => {
+    setSelectedProps([]);
+  };
+
   const sortedData = gamesData
     ? Object.entries(gamesData.lines)
         .flatMap(([playerName, playerProps]) => {
@@ -179,19 +190,17 @@ const NBAPage = () => {
             )
           );
 
-          const gameKey = game
-            ? Object.keys(gamesData.players).find((key) =>
-                Object.keys(gamesData.players[key].teams).some((teamKey) =>
-                  Object.keys(gamesData.players[key].teams[teamKey]).includes(
-                    playerName
-                  )
-                )
-              )
-            : "Unknown Game";
+          if (!game) return [];
 
-          const gameTitle = game
-            ? `${game.away_team} @ ${game.home_team}`
-            : "Unknown Game";
+          const gameKey = Object.keys(gamesData.players).find((key) =>
+            Object.keys(gamesData.players[key].teams).some((teamKey) =>
+              Object.keys(gamesData.players[key].teams[teamKey]).includes(
+                playerName
+              )
+            )
+          );
+
+          const gameTitle = `${game.away_team} @ ${game.home_team}`;
 
           const playerLogs = game
             ? (() => {
@@ -216,11 +225,9 @@ const NBAPage = () => {
               })()
             : [];
 
-          const playerTeam = game
-            ? Object.keys(game.teams).find((teamKey) =>
-                Object.keys(game.teams[teamKey]).includes(playerName)
-              )
-            : "Unknown Team";
+          const playerTeam = Object.keys(game.teams).find((teamKey) =>
+            Object.keys(game.teams[teamKey]).includes(playerName)
+          );
 
           return playerProps.map((prop) => {
             const statType = prop.details.stat_type as keyof GameLog;
@@ -228,39 +235,35 @@ const NBAPage = () => {
               ? calculateL10Avg(playerLogs, statType)
               : null;
 
+            let line = prop.details.line_score;
+            let promo = false;
+            if (prop.details.is_promo) {
+              promo = true;
+              line = prop.details.flash_sale_line_score;
+            }
+
+            const diff = l10Avg ? l10Avg - prop.details.line_score : 0;
+
             return {
               playerName,
               gameTitle,
               gameKey: gameKey ?? "Unknown Game",
               playerTeam: playerTeam ?? "Unknown Team",
               propType: prop.details.stat_type,
-              propLine: prop.details.line_score,
+              propLine: line,
               propOdds: prop.details.odds_type,
               propsTime: prop.details.start_time,
+              propDiscountName: promo ? prop.details.discount_name : "",
               l10Avg,
+              diff: diff,
               l5HitRate: playerLogs
-                ? calculateHitRate(
-                    playerLogs,
-                    statType,
-                    prop.details.line_score,
-                    5
-                  )
+                ? calculateHitRate(playerLogs, statType, line, 5)
                 : 0,
               l10HitRate: playerLogs
-                ? calculateHitRate(
-                    playerLogs,
-                    statType,
-                    prop.details.line_score,
-                    10
-                  )
+                ? calculateHitRate(playerLogs, statType, line, 10)
                 : 0,
               l15HitRate: playerLogs
-                ? calculateHitRate(
-                    playerLogs,
-                    statType,
-                    prop.details.line_score,
-                    15
-                  )
+                ? calculateHitRate(playerLogs, statType, line, 15)
                 : 0,
             };
           });
@@ -332,32 +335,37 @@ const NBAPage = () => {
     });
 
   return (
-    <div className="nba-container md:container mx-auto">
-      <div className="prop-control-container flex sticky top-0 md:relative flex-col md:flex-row filter-menu bg-[#130e0e] mx-4 md:mx-0 py-4 md:py-0 md:my-8 gap-2">
+    <div className="nba-container md:container mx-auto ">
+      <div className="bg-background-950 prop-control-container flex sticky top-0 md:relative flex-col md:flex-row filter-menu mx-4 md:mx-0 py-4 md:py-0 md:my-8 gap-2">
         {/* PROP OPTIONS */}
-        <GamesFilter
-          availableGames={gameTitles}
-          selectedGames={selectedGames}
-          toggleGameSelection={toggleGameSelection}
-        />
-        <PropsFilter
-          availableProps={availableProps}
-          selectedProps={selectedProps}
-          handlePropSelection={handlePropSelection}
-        />
+        <div className="flex flex-row gap-2 overflow-scroll md:overflow-visible md:w-fit">
+          <GamesFilter
+            availableGames={gameTitles}
+            selectedGames={selectedGames}
+            toggleGameSelection={toggleGameSelection}
+          />
+          <PropsFilter
+            availableProps={availableProps}
+            selectedProps={selectedProps}
+            handlePropSelection={handlePropSelection}
+            handleSelectAll={handleSelectAll}
+            handleDeselectAll={handleDeselectAll}
+          />
 
-        {/* MODIFER OPTIONS */}
-        <ModifierFilters
-          filterModifiers={filterModifiers}
-          toggleFilter={toggleFilter}
-        />
-        <input
+          {/* MODIFER OPTIONS */}
+          <ModifierFilters
+            filterModifiers={filterModifiers}
+            toggleFilter={toggleFilter}
+          />
+        </div>
+
+        <Input
           type="text"
-          placeholder={"Search for players"}
-          className="rounded-lg h-full font-medium text-sm bg-background-800 py-2 px-4 w-full"
+          placeholder="Search for players"
+          className="rounded-md h-full font-medium text-sm bg-background-800 py-2 px-4 w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        ></Input>
 
         {isMobile ? (
           <>

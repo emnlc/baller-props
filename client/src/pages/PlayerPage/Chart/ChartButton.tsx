@@ -26,7 +26,7 @@ const calculateHitRate = (logs: GameLog[], key: string, line: number) => {
   if (logs.length === 0 || !key) return -1;
   const hits = logs.filter((log) => {
     const value = Number(log[key as keyof GameLog]);
-    return !isNaN(value) && value > line;
+    return !isNaN(value) && value >= line;
   }).length;
   return (hits / logs.length) * 100;
 };

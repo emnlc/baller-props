@@ -57,7 +57,7 @@ const AverageDetails = (props: Props) => {
             <h1 className="font-medium text-sm md:text-lg">{props.title}</h1>
             {avg ? (
               <span
-                className={`p-4 w-full text-center bg-background-800 ${
+                className={`p-4 w-full text-center bg-background-800 min-w-36 md:min-w-fit rounded-xl font-medium text-xs md:text-lg ${
                   avg && avg > props.propLine
                     ? "text-bpGreen"
                     : avg === props.propLine

@@ -131,14 +131,14 @@ const StatsChart = (props: Props) => {
             />
           </span>
           <div className="flex flex-row items-center gap-4 w-fit">
-            <span className="text-sm md:text-lg font-medium">Line</span>
+            <span className="text-sm md:text-base font-medium">Line</span>
             <Input
               type="number"
               step={0.5}
               min={0}
               value={propLine}
               onChange={(e) => setPropLine(Number(e.target.value))}
-              className="font-medium text-sm md:text-lg bg-background-800 px-2 py-1 rounded-lg w-20"
+              className="font-medium text-sm md:text-base bg-background-800 px-2 py-1 rounded-lg w-20"
             />
           </div>
         </div>

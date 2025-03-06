@@ -26,6 +26,10 @@ interface PropDetail {
   line_score: number;
   odds_type: string;
   start_time: string;
+
+  discount_name: string;
+  is_promo: boolean;
+  flash_sale_line_score: number;
 }
 
 interface PlayerProp {

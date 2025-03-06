@@ -18,11 +18,12 @@ type Props = {
     playerTeam: string;
     gameKey: string;
     propsTime: string;
+    diff: number;
   }[];
-  sortColumn: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate";
+  sortColumn: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff";
   sortOrder: "asc" | "desc";
   handleSort: (
-    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate"
+    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
   ) => void;
 };
 
@@ -191,6 +192,20 @@ const PropsCard = ({ sortedData }: Props) => {
                     }`}
                   >
                     {row.l15HitRate}%
+                  </span>
+                </div>
+                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+                  <span className="font-medium">Diff</span>
+                  <span
+                    className={`font-bold ${
+                      row.diff && row.diff > 0
+                        ? "text-bpGreen"
+                        : row.diff === 0
+                        ? "text-white"
+                        : "text-bpRed"
+                    }`}
+                  >
+                    {row.diff.toFixed(1)}
                   </span>
                 </div>
               </div>
