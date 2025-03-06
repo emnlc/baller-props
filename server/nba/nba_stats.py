@@ -45,23 +45,29 @@ def get_player_stats(supabase: Client, current_cache):
                     player_stats = defaultdict(lambda: defaultdict(lambda: {"lines": {}, "player_id": None}))             
                     players = data[game_title][team]
                     for player in players:
-                        # print(f"checking: {player}")
+                        print(f"checking: {player}")
+                        
+                        # CHECK IF PLAYER IS IN DATABASE
                         res = supabase.table("NBA").select("id").eq("player_name", player).execute()
                         
+                        # IF PLAYER HAS EXISTING DATA
                         if len(res.data) > 0:
                             player_data = res.data[0]
                             player_id = player_data.get("id")
-                            # UPDATE PLAYER GAME LOG IF NEEDED
-                            updated = get_missing_games(supabase=supabase, player_id=player_id)
                             
-                            # skip if already in cache and not updated
+                            # UPDATE PLAYER GAME LOG IF NEEDED
+                            updated = get_missing_games(supabase=supabase, player_id=player_id, team=team)
+                            
+                            # SKIP IF ALREADY IN CACHE AND NOT UPDATED
                             if not updated and player in current_cache.get(game_title, {}).get("teams", {}).get(team, {}):
                                 player_stats[player] = current_cache[game_title]["teams"][team][player]
                                 continue
                             
+                            # GET PLAYER DATA FROM DATABASE
                             res = supabase.table("NBA").select("current_season_game_logs, previous_season_game_logs").eq("id", player_id).execute()
 
-                            if res.data: 
+                            # ADD PLAYER DATA TO player_stats CACHE
+                            if res.data:
                                 current_season_logs = res.data[0]["current_season_game_logs"]
                                 previous_season_logs = res.data[0]["previous_season_game_logs"]
                                 player_stats[player]["player_id"] = player_id
@@ -74,6 +80,7 @@ def get_player_stats(supabase: Client, current_cache):
                         time.sleep(delay)
                         player_id = get_player_id(player_name=str(player), threshold=80)
                         if player_id == None:
+                            print(f"{player} has no ID")
                             continue # skip current player
                         
                         time.sleep(delay)

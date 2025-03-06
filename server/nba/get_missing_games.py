@@ -51,7 +51,7 @@ def get_missing_game_logs(player_id, date_from):
     return game_logs
 
 
-def get_missing_games(supabase: Client, player_id):
+def get_missing_games(supabase: Client, player_id, team):
     updated = False
 
     # Fetch the current game logs and last updated date from Supabase
@@ -88,7 +88,8 @@ def get_missing_games(supabase: Client, player_id):
             try:
                 supabase.table("NBA").update({
                     "current_season_game_logs": updated_logs,
-                    "last_updated": current_date.isoformat()
+                    "last_updated": current_date.isoformat(),
+                    "team_tricode": team
                 }).eq("id", player_id).execute()
                 print(f"Successfully updated player ID {player_id}")
             except Exception as e:
