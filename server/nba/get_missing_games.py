@@ -46,7 +46,7 @@ def get_missing_game_logs(player_id, date_from):
                     game_logs.append(current_game)
                 
         except Exception as e:
-            print(f"Error fetching logs for {season_type}: {e}")
+            print(f"Error fetching logs for {player_id} during {season_type}: {e}")
             
     return game_logs
 
@@ -94,5 +94,14 @@ def get_missing_games(supabase: Client, player_id, team):
                 print(f"Successfully updated player ID {player_id}")
             except Exception as e:
                 print(f"Error updating player ID {player_id}: {e}")
+    
+    # Update the Supabase table
+    try:
+        supabase.table("NBA").update({
+            "last_updated": current_date.isoformat()
+        }).eq("id", player_id).execute()
+        print(f"Successfully updated player ID {player_id}")
+    except Exception as e:
+        print(f"Error updating player ID {player_id}: {e}")
     
     return updated
