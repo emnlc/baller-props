@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
 import { type ChartConfig } from "@/components/ui/chart";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 type Props = {
   current_season_logs: GameLog[];
@@ -15,6 +15,7 @@ type Props = {
   prop: string | null;
   propLine: number;
   propOdd: string | null;
+  opponent: string;
 };
 
 import ChartButton from "./ChartButton";
@@ -22,7 +23,23 @@ import ChartButton from "./ChartButton";
 const StatsChart = (props: Props) => {
   const [filterRange, setFilterRange] = useState<number | null>(10);
   const [showPreviousSeason, setShowPreviousSeason] = useState(false);
+  const [showH2H, setShowH2H] = useState(false);
   const [propLine, setPropLine] = useState<number>(props.propLine); // Local state for live line adjustment
+
+  const getH2HLogs = useCallback(
+    (opponent: string) => {
+      const currentLogs = props.current_season_logs;
+      const previousLogs = props.previous_season_logs;
+
+      const allLogs = [...previousLogs, ...currentLogs];
+
+      const h2hLogs = allLogs.filter((log) => log.MATCHUP.includes(opponent));
+
+      console.log(h2hLogs);
+      return h2hLogs;
+    },
+    [props.current_season_logs, props.previous_season_logs] // Dependencies for useCallback
+  );
 
   const filteredLogs = useMemo(() => {
     const currentLogs = props.current_season_logs;
@@ -32,6 +49,10 @@ const StatsChart = (props: Props) => {
       return filterRange === null
         ? previousLogs
         : previousLogs.slice(-filterRange);
+    }
+
+    if (showH2H) {
+      return getH2HLogs(props.opponent);
     }
 
     if (filterRange === null) {
@@ -49,8 +70,11 @@ const StatsChart = (props: Props) => {
   }, [
     filterRange,
     showPreviousSeason,
+    showH2H,
+    props.opponent,
     props.current_season_logs,
     props.previous_season_logs,
+    getH2HLogs,
   ]);
 
   const chartConfig = {
@@ -75,7 +99,7 @@ const StatsChart = (props: Props) => {
 
   return (
     <>
-      <div className="flex flex-col w-full bg-background-900 rounded-3xl px-2 md:py-8">
+      <div className="flex flex-col w-full bg-background-900 rounded-3xl px-2 md:py-8 border border-background-600">
         {/* Button Controls */}
         <div className="flex flex-row px-2 md:px-8 gap-1 md:gap-2 pt-6 md:py-0 pb-2 md:pb-0 overflow-x-scroll md:overflow-hidden">
           {[5, 10, 15].map((range) => (
@@ -88,7 +112,9 @@ const StatsChart = (props: Props) => {
               filterRange={filterRange}
               setFilterRange={setFilterRange}
               showPreviousSeason={showPreviousSeason}
+              showH2H={showH2H}
               setShowPreviousSeason={setShowPreviousSeason}
+              setShowH2H={setShowH2H}
             />
           ))}
           <ChartButton
@@ -99,7 +125,9 @@ const StatsChart = (props: Props) => {
             filterRange={filterRange}
             setFilterRange={setFilterRange}
             showPreviousSeason={showPreviousSeason}
+            showH2H={showH2H}
             setShowPreviousSeason={setShowPreviousSeason}
+            setShowH2H={setShowH2H}
           />
           <ChartButton
             logs={props.previous_season_logs}
@@ -109,8 +137,23 @@ const StatsChart = (props: Props) => {
             filterRange={filterRange}
             setFilterRange={setFilterRange}
             showPreviousSeason={showPreviousSeason}
+            showH2H={showH2H}
             setShowPreviousSeason={setShowPreviousSeason}
+            setShowH2H={setShowH2H}
             prevSeason={true}
+          />
+          <ChartButton
+            logs={getH2HLogs(props.opponent)}
+            title="H2H"
+            propLine={propLine}
+            prop={props.prop}
+            filterRange={filterRange}
+            setFilterRange={setFilterRange}
+            showPreviousSeason={showPreviousSeason}
+            showH2H={showH2H}
+            setShowPreviousSeason={setShowPreviousSeason}
+            setShowH2H={setShowH2H}
+            h2h={true}
           />
         </div>
 
@@ -131,14 +174,14 @@ const StatsChart = (props: Props) => {
             />
           </span>
           <div className="flex flex-row items-center gap-4 w-fit">
-            <span className="text-sm md:text-base font-medium">Line</span>
+            <span className="text-sm font-medium">Line</span>
             <Input
               type="number"
               step={0.5}
               min={0}
               value={propLine}
               onChange={(e) => setPropLine(Number(e.target.value))}
-              className="font-medium text-sm md:text-base bg-background-800 px-2 py-1 rounded-lg w-20"
+              className="font-medium text-sm bg-background-800 px-2 py-1 rounded-lg w-20 border border-background-600"
             />
           </div>
         </div>

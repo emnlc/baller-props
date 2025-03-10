@@ -9,6 +9,14 @@ body {
   color: white;
 }
 
+* {
+  overscroll-behavior-x: none;
+}
+
+#props-card {
+  overscroll-behavior-y: none;
+}
+
 @layer utilities {
   .table-scrollbar::-webkit-scrollbar {
     width: 12px;

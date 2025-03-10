@@ -14,6 +14,7 @@ import useWindowSize from "@/hooks/isMobile";
 import { Input } from "@/components/ui/input";
 
 import { HashLoader } from "react-spinners";
+import Navbar from "../Landing/Navbar";
 
 function loadSessionFilters() {
   const saved = sessionStorage.getItem("nbaFilters");
@@ -53,7 +54,13 @@ const NBAPage = () => {
     initialFilters.sortOrder
   );
   const [sortColumn, setSortColumn] = useState<
-    "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
+    | "l10Avg"
+    | "l5HitRate"
+    | "l10HitRate"
+    | "l15HitRate"
+    | "diff"
+    | "h2h"
+    | "season"
   >(initialFilters.sortColumn);
   const [selectedProps, setSelectedProps] = useState<string[]>(
     initialFilters.selectedProps
@@ -140,6 +147,41 @@ const NBAPage = () => {
       : 0;
   };
 
+  const calculateH2H = (
+    currentLogs: GameLog[],
+    previousLogs: GameLog[],
+    statType: keyof GameLog,
+    line: number,
+    opponent: string
+  ): number => {
+    // Combine current and previous season logs
+    const allLogs = [...previousLogs, ...currentLogs];
+
+    // Filter logs to include only games against the specified opponent team
+    const h2hLogs = allLogs.filter((game) => game.MATCHUP.includes(opponent));
+
+    // Count the number of times the player hit over the prop line in those games
+    const hits = h2hLogs.filter(
+      (game) => typeof game[statType] === "number" && game[statType] >= line
+    ).length;
+
+    return h2hLogs.length ? Math.round((hits / h2hLogs.length) * 100) : 0;
+  };
+
+  const calculateSZN = (
+    currentLogs: GameLog[],
+    statType: keyof GameLog,
+    line: number
+  ): number => {
+    const hits = currentLogs.filter(
+      (game) => typeof game[statType] === "number" && game[statType] >= line
+    ).length;
+
+    return currentLogs.length
+      ? Math.round((hits / currentLogs.length) * 100)
+      : 0;
+  };
+
   const calculateL10Avg = (
     logs: GameLog[],
     statType: keyof GameLog
@@ -153,7 +195,14 @@ const NBAPage = () => {
   };
 
   const handleSort = (
-    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
+    column:
+      | "l10Avg"
+      | "l5HitRate"
+      | "l10HitRate"
+      | "l15HitRate"
+      | "diff"
+      | "h2h"
+      | "season"
   ) => {
     if (sortColumn === column) {
       setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
@@ -215,24 +264,21 @@ const NBAPage = () => {
                     .find(([name]) => name === playerName)?.[1]
                     ?.previous_season_logs || [];
 
-                if (currentLogs.length < 15) {
-                  return [
-                    ...previousLogs.slice(-(15 - currentLogs.length)),
-                    ...currentLogs,
-                  ];
-                }
-                return currentLogs;
+                return { currentLogs, previousLogs };
               })()
-            : [];
+            : { currentLogs: [], previousLogs: [] };
 
           const playerTeam = Object.keys(game.teams).find((teamKey) =>
             Object.keys(game.teams[teamKey]).includes(playerName)
           );
 
+          const opponentTeam =
+            playerTeam === game.away_team ? game.home_team : game.away_team;
+
           return playerProps.map((prop) => {
             const statType = prop.details.stat_type as keyof GameLog;
-            const l10Avg = playerLogs
-              ? calculateL10Avg(playerLogs, statType)
+            const l10Avg = playerLogs.currentLogs
+              ? calculateL10Avg(playerLogs.currentLogs, statType)
               : null;
 
             let line = prop.details.line_score;
@@ -249,6 +295,7 @@ const NBAPage = () => {
               gameTitle,
               gameKey: gameKey ?? "Unknown Game",
               playerTeam: playerTeam ?? "Unknown Team",
+              opponentTeam, // Add opponentTeam to the returned object
               propType: prop.details.stat_type,
               propLine: line,
               propOdds: prop.details.odds_type,
@@ -256,15 +303,23 @@ const NBAPage = () => {
               propDiscountName: promo ? prop.details.discount_name : "",
               l10Avg,
               diff: diff,
-              l5HitRate: playerLogs
-                ? calculateHitRate(playerLogs, statType, line, 5)
+              l5HitRate: playerLogs.currentLogs
+                ? calculateHitRate(playerLogs.currentLogs, statType, line, 5)
                 : 0,
-              l10HitRate: playerLogs
-                ? calculateHitRate(playerLogs, statType, line, 10)
+              l10HitRate: playerLogs.currentLogs
+                ? calculateHitRate(playerLogs.currentLogs, statType, line, 10)
                 : 0,
-              l15HitRate: playerLogs
-                ? calculateHitRate(playerLogs, statType, line, 15)
+              l15HitRate: playerLogs.currentLogs
+                ? calculateHitRate(playerLogs.currentLogs, statType, line, 15)
                 : 0,
+              h2h: calculateH2H(
+                playerLogs.currentLogs,
+                playerLogs.previousLogs,
+                statType,
+                line,
+                opponentTeam
+              ),
+              season: calculateSZN(playerLogs.currentLogs, statType, line),
             };
           });
         })
@@ -335,9 +390,21 @@ const NBAPage = () => {
     });
 
   return (
-    <div className="nba-container md:container mx-auto ">
-      <div className="bg-background-950 prop-control-container flex sticky top-0 md:relative flex-col md:flex-row filter-menu mx-4 md:mx-0 py-4 md:py-0 md:my-8 gap-2">
+    <div className="nba-container md:container mx-auto flex flex-col max-h-dvh">
+      <Navbar />
+      <div className="bg-background-950 prop-control-container flex sticky top-0 md:relative flex-col-reverse md:flex-row filter-menu mx-4 md:mx-0 py-4 md:py-0 md:my-4 gap-2 flex-1">
         {/* PROP OPTIONS */}
+        {isMobile ? (
+          <>
+            <MobileFilters
+              sortOrder={sortOrder}
+              sortColumn={sortColumn}
+              handleSort={handleSort}
+            />
+          </>
+        ) : (
+          <></>
+        )}
         <div className="flex flex-row gap-2 overflow-scroll md:overflow-visible md:w-fit">
           <GamesFilter
             availableGames={gameTitles}
@@ -362,32 +429,24 @@ const NBAPage = () => {
         <Input
           type="text"
           placeholder="Search for players"
-          className="rounded-md h-full font-medium text-sm bg-background-800 py-2 px-4 w-full"
+          className="rounded-md h-full font-medium text-sm bg-background-800 border border-background-600 py-2 px-4 w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-        ></Input>
-
-        {isMobile ? (
-          <>
-            <MobileFilters
-              sortOrder={sortOrder}
-              sortColumn={sortColumn}
-              handleSort={handleSort}
-            />
-          </>
-        ) : (
-          <></>
-        )}
+        />
       </div>
 
       {/* PROPS TABLE */}
       {isMobile ? (
-        <PropsCard
-          sortedData={sortedData}
-          sortColumn={sortColumn}
-          sortOrder={sortOrder}
-          handleSort={handleSort}
-        />
+        <>
+          <div id="props-card" className="flex-1 overflow-y-scroll">
+            <PropsCard
+              sortedData={sortedData}
+              sortColumn={sortColumn}
+              sortOrder={sortOrder}
+              handleSort={handleSort}
+            />
+          </div>
+        </>
       ) : (
         <PropsTable
           sortedData={sortedData}

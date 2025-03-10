@@ -14,10 +14,10 @@ function Feature() {
               <p className="text-lg text-gray-300">
                 Quickly view
                 <span className="text-bpGreen"> player prop hit rates</span> for
-                players based on current season stats.
+                players based on current season stats.{" "}
                 <span className="text-bpYellow">
                   Last 10 game and H2H stats
-                </span>
+                </span>{" "}
                 also included.
               </p>
             </div>

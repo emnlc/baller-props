@@ -26,11 +26,27 @@ type Props = {
     playerTeam: string;
     gameKey: string;
     propsTime: string;
+    h2h: number;
+    season: number;
   }[];
-  sortColumn: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff";
+  sortColumn:
+    | "l10Avg"
+    | "l5HitRate"
+    | "l10HitRate"
+    | "l15HitRate"
+    | "diff"
+    | "h2h"
+    | "season";
   sortOrder: "asc" | "desc";
   handleSort: (
-    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
+    column:
+      | "l10Avg"
+      | "l5HitRate"
+      | "l10HitRate"
+      | "l15HitRate"
+      | "diff"
+      | "h2h"
+      | "season"
   ) => void;
 };
 
@@ -44,18 +60,29 @@ const PropsTable = ({
   const itemsPerPage = 30; // Number of rows per page
   const tableContainerRef = useRef<HTMLDivElement | null>(null); // Ref for the table container
 
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+
+  // Adjust current page if it exceeds the total number of pages
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
   // Retrieve the current page from session storage when the component mounts
   useEffect(() => {
     const savedPage = sessionStorage.getItem("currentPage");
     if (savedPage) {
-      setCurrentPage(parseInt(savedPage, 10));
+      const page = parseInt(savedPage, 10);
+      // Ensure the saved page is within the valid range
+      if (page <= totalPages) {
+        setCurrentPage(page);
+      } else {
+        setCurrentPage(totalPages);
+      }
     }
-  }, []);
-
-  // Rest of the component code...
-
-  // Calculate the total number of pages
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+  }, [totalPages]);
 
   // Get the data for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -109,7 +136,7 @@ const PropsTable = ({
         key="prev"
         onClick={goToPreviousPage}
         disabled={currentPage === 1}
-        className="w-8 h-8 bg-background-700 hover:bg-background-600 text-xs text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        className="w-8 h-8 bg-background-700 border border-background-600 hover:bg-background-600 text-xs text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         ⟨
       </button>
@@ -123,8 +150,8 @@ const PropsTable = ({
           onClick={() => goToPage(1)}
           className={`w-8 h-8 ${
             currentPage === 1
-              ? "bg-accent-500 hover:bg-accent-400 text-white"
-              : "bg-background-700 hover:bg-background-600 transition-all text-white"
+              ? "bg-accent-500 hover:bg-accent-400 border border-accent-400 text-white"
+              : "bg-background-700 border border-background-600 hover:bg-background-600 transition-all text-white"
           } text-xs rounded-lg `}
         >
           1
@@ -152,8 +179,8 @@ const PropsTable = ({
           onClick={() => goToPage(i)}
           className={`w-8 h-8 ${
             currentPage === i
-              ? "bg-accent-500 hover:bg-accent-400 transition-all text-white"
-              : "bg-background-700 hover:bg-background-600 transition-all text-white"
+              ? "bg-accent-500 hover:bg-accent-400 border border-accent-400 transition-all text-white"
+              : "bg-background-700 border border-background-600 hover:bg-background-600 transition-all text-white"
           } text-xs rounded-lg`}
         >
           {i}
@@ -182,7 +209,7 @@ const PropsTable = ({
           className={`w-8 h-8 ${
             currentPage === totalPages
               ? "bg-accent-500 hover:bg-accent-400 transition-all text-white"
-              : "bg-background-700 hover:bg-background-600 transition-all text-white"
+              : "bg-background-700 hover:bg-background-600 border border-background-600 transition-all text-white"
           } text-xs rounded-lg`}
         >
           {totalPages}
@@ -196,7 +223,7 @@ const PropsTable = ({
         key="next"
         onClick={goToNextPage}
         disabled={currentPage === totalPages}
-        className="w-8 h-8 bg-background-700 hover:bg-background-600 transition-all text-xs text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-8 h-8 bg-background-700 border border-background-600 hover:bg-background-600 transition-all text-xs text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         ⟩
       </button>
@@ -207,7 +234,7 @@ const PropsTable = ({
 
   const getButtonClass = (column: string) => {
     return `flex items-center gap-2 ${
-      sortColumn === column ? "text-accent-500" : "text-white"
+      sortColumn === column ? "text-accent-500 font-bold" : "text-white"
     }`;
   };
 
@@ -215,11 +242,11 @@ const PropsTable = ({
     <>
       {sortedData.length > 0 ? (
         <>
-          <div className="w-full overflow-hidden">
+          <div className="w-full overflow-hidden rounded-xl">
             {/* Table container with ref */}
             <div
               ref={tableContainerRef}
-              className="h-[calc(100vh-300px)] relative overflow-auto table-scrollbar rounded-xl"
+              className="h-[calc(100vh-300px)] relative overflow-auto table-scrollbar rounded-xl border border-background-600"
             >
               <Table className="bg-background-900 text-xs md:text-sm">
                 <TableHeader className="bg-background-800 text-center sticky top-0">
@@ -227,30 +254,19 @@ const PropsTable = ({
                     <TableHead className="font-medium">Player</TableHead>
                     <TableHead className="font-medium">Prop Type</TableHead>
                     <TableHead className="font-medium">Prop Line</TableHead>
-                    <TableHead className="font-medium w-24">
-                      <button
-                        onClick={() => handleSort("diff")}
-                        className={getButtonClass("diff")}
-                      >
-                        Diff
-                        {sortColumn === "diff" ? (
-                          sortOrder === "asc" ? (
-                            <span>↑</span>
-                          ) : (
-                            <span>↓</span>
-                          )
-                        ) : (
-                          <span>↓</span>
-                        )}
-                      </button>
-                    </TableHead>
                     {[
-                      { column: "l10Avg", label: "L10 Avg" },
-                      { column: "l5HitRate", label: "L5" },
-                      { column: "l10HitRate", label: "L10" },
-                      { column: "l15HitRate", label: "L15" },
-                    ].map(({ column, label }) => (
-                      <TableHead key={column} className="font-medium w-36">
+                      { column: "diff", label: "Diff", width: "w-16" },
+                      { column: "l10Avg", label: "L10 Avg", width: "w-32" },
+                      { column: "l5HitRate", label: "L5", width: "w-32" },
+                      { column: "l10HitRate", label: "L10", width: "w-32" },
+                      { column: "l15HitRate", label: "L15", width: "w-32" },
+                      { column: "h2h", label: "H2H", width: "w-16" },
+                      { column: "season", label: "SZN", width: "w-16" },
+                    ].map(({ column, label, width }) => (
+                      <TableHead
+                        key={column}
+                        className={`font-medium ${width}`}
+                      >
                         <button
                           onClick={() =>
                             handleSort(
@@ -260,6 +276,8 @@ const PropsTable = ({
                                 | "l10HitRate"
                                 | "l15HitRate"
                                 | "diff"
+                                | "h2h"
+                                | "season"
                             )
                           }
                           className={getButtonClass(column)}
@@ -317,7 +335,6 @@ const PropsTable = ({
                             }&propsTime=${encodeURIComponent(row.propsTime)}`,
                           }}
                           onClick={() => {
-                            // Save the current page to session storage
                             sessionStorage.setItem(
                               "currentPage",
                               currentPage.toString()
@@ -325,7 +342,7 @@ const PropsTable = ({
                           }}
                         >
                           <FontAwesomeIcon
-                            className="text-lg text-accent-500"
+                            className="text-lg text-accent-500 hover:text-accent-400 transition-all"
                             icon={faChartSimple}
                           />
                         </Link>
@@ -398,9 +415,33 @@ const PropsTable = ({
                             : row.l15HitRate === 50
                             ? "bg-background-700"
                             : "bg-bpRedRange-400"
-                        } text-center`}
+                        } text-center border-r-[2.5px] border-[#0a0a0a]`}
                       >
                         {row.l15HitRate}%
+                      </TableCell>
+
+                      <TableCell
+                        className={`${
+                          row.h2h && row.h2h > 50
+                            ? "bg-bpGreenRange-400"
+                            : row.h2h === 50
+                            ? "bg-background-700"
+                            : "bg-bpRedRange-400"
+                        } text-center border-r-[2.5px] border-[#0a0a0a]`}
+                      >
+                        {row.h2h}%
+                      </TableCell>
+
+                      <TableCell
+                        className={`${
+                          row.season && row.season > 50
+                            ? "bg-bpGreenRange-400"
+                            : row.season === 50
+                            ? "bg-background-700"
+                            : "bg-bpRedRange-400"
+                        } text-center`}
+                      >
+                        {row.season}%
                       </TableCell>
                     </TableRow>
                   ))}

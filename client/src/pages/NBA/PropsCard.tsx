@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState, useRef } from "react";
-import { SyncLoader } from "react-spinners";
 
 type Props = {
   sortedData: {
@@ -19,11 +18,27 @@ type Props = {
     gameKey: string;
     propsTime: string;
     diff: number;
+    h2h: number;
+    season: number;
   }[];
-  sortColumn: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff";
+  sortColumn:
+    | "l10Avg"
+    | "l5HitRate"
+    | "l10HitRate"
+    | "l15HitRate"
+    | "diff"
+    | "h2h"
+    | "season";
   sortOrder: "asc" | "desc";
   handleSort: (
-    column: "l10Avg" | "l5HitRate" | "l10HitRate" | "l15HitRate" | "diff"
+    column:
+      | "l10Avg"
+      | "l5HitRate"
+      | "l10HitRate"
+      | "l15HitRate"
+      | "diff"
+      | "h2h"
+      | "season"
   ) => void;
 };
 
@@ -71,11 +86,11 @@ const PropsCard = ({ sortedData }: Props) => {
   return (
     <>
       {sortedData.length > 0 ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {visibleData.map((row, index) => (
             <div
               key={`${row.playerName}-${index}`}
-              className="flex flex-col text-sm justify-start player-card bg-background-900 mx-4 rounded-2xl py-4 gap-4 px-4 text-start"
+              className="flex flex-col text-sm justify-start player-card bg-background-900 mx-4 rounded-2xl py-4 gap-4 px-4 text-start border border-background-600"
             >
               <div className="player-card-title flex flex-col">
                 <span className="flex flex-row justify-between">
@@ -137,71 +152,102 @@ const PropsCard = ({ sortedData }: Props) => {
                 </div>
               </div>
 
-              <div className="stats-container flex flex-row gap-2 overflow-x-scroll md:overflow-hidden overflow-y-hidden pb-2">
-                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+              <div className="stats-container flex flex-row gap-1 overflow-x-scroll md:overflow-hidden overflow-y-hidden pb-2">
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
                   <span className="font-medium">L10 Avg</span>
                   <span
                     className={`font-bold ${
                       row.l10Avg && row.l10Avg > row.propLine
                         ? "text-bpGreen"
                         : row.l10Avg === row.propLine
-                        ? "text-white"
+                        ? "text-gray-300"
                         : "text-bpRed"
                     }`}
                   >
                     {row.l10Avg?.toFixed(1)}
                   </span>
                 </div>
-                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
                   <span className="font-medium">L5 HR</span>
                   <span
                     className={`font-bold ${
                       row.l5HitRate && row.l5HitRate > row.propLine
                         ? "text-bpGreen"
                         : row.l5HitRate === row.propLine
-                        ? "text-white"
+                        ? "text-gray-300"
                         : "text-bpRed"
                     }`}
                   >
                     {row.l5HitRate}%
                   </span>
                 </div>
-                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
                   <span className="font-medium">L10 HR</span>
                   <span
                     className={`font-bold ${
                       row.l10HitRate && row.l10HitRate > row.propLine
                         ? "text-bpGreen"
                         : row.l10HitRate === row.propLine
-                        ? "text-white"
+                        ? "text-gray-300"
                         : "text-bpRed"
                     }`}
                   >
                     {row.l10HitRate}%
                   </span>
                 </div>
-                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
                   <span className="font-medium">L15 HR</span>
                   <span
                     className={`font-bold ${
                       row.l15HitRate && row.l15HitRate > row.propLine
                         ? "text-bpGreen"
                         : row.l15HitRate === row.propLine
-                        ? "text-white"
+                        ? "text-gray-300"
                         : "text-bpRed"
                     }`}
                   >
                     {row.l15HitRate}%
                   </span>
                 </div>
-                <div className="min-w-24 items-center text-xs p-2 flex flex-col gap-1 bg-background-800 rounded-xl">
+
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
+                  <span className="font-medium">H2H</span>
+                  <span
+                    className={`font-bold ${
+                      row.h2h && row.h2h > 50
+                        ? "text-bpGreen"
+                        : row.h2h === 50
+                        ? "text-gray-300"
+                        : "text-bpRed"
+                    }`}
+                  >
+                    {row.h2h.toFixed(0)}%
+                  </span>
+                </div>
+
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
+                  <span className="font-medium">SZN</span>
+                  <span
+                    className={`font-bold ${
+                      row.season && row.season > 50
+                        ? "text-bpGreen"
+                        : row.season === 50
+                        ? "text-gray-300"
+                        : "text-bpRed"
+                    }`}
+                  >
+                    {row.season.toFixed(0)}%
+                  </span>
+                </div>
+
+                <div className="min-w-16 max-w-16 h-16 justify-center items-center text-xs p-2 flex flex-col gap-1 border border-background-600 bg-background-800 rounded-xl">
                   <span className="font-medium">Diff</span>
                   <span
                     className={`font-bold ${
                       row.diff && row.diff > 0
                         ? "text-bpGreen"
                         : row.diff === 0
-                        ? "text-white"
+                        ? "text-gray-300"
                         : "text-bpRed"
                     }`}
                   >
@@ -211,12 +257,6 @@ const PropsCard = ({ sortedData }: Props) => {
               </div>
             </div>
           ))}
-
-          {isLoading && (
-            <div className="text-center py-4 text-sm text-accent-300">
-              <SyncLoader color="#da8b91 " size={10} />
-            </div>
-          )}
 
           <div ref={bottomRef} style={{ height: "1px" }} />
         </div>

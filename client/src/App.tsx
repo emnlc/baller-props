@@ -11,8 +11,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/nba" element={<NBAPage />} />
           <Route element={<NavbarLayout />}>
-            <Route path="/nba" element={<NBAPage />} />
             <Route path="/player-page" element={<PlayerPage />} />
           </Route>
         </Routes>

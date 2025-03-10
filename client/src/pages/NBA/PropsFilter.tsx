@@ -26,9 +26,9 @@ const PropsFilter = (props: Props) => {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="bg-background-800 h-full text-sm font-semibold justify-between w-44 md:w-48 hover:bg-opacity-60"
+          className="bg-background-800 h-full text-sm font-semibold justify-between w-44 md:w-48 hover:bg-background-700 border border-background-600"
         >
-          Prop Types
+          Props
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -55,7 +55,7 @@ const PropsFilter = (props: Props) => {
             onClick={
               hasSelectedProps ? props.handleDeselectAll : props.handleSelectAll
             }
-            className="w-full text-xs  hover:bg-background-700 transition-colors bg-background-800"
+            className="w-full text-xs  hover:bg-background-700 transition-colors bg-background-800 border border-background-600"
           >
             {hasSelectedProps ? "Clear" : "Select All"}
           </Button>
@@ -63,7 +63,7 @@ const PropsFilter = (props: Props) => {
             onClick={() => {
               setOpen(!open);
             }}
-            className="w-full text-xs hover:bg-background-700 transition-colors bg-background-800"
+            className="w-full text-xs hover:bg-background-700 transition-colors bg-background-800 border border-background-600"
           >
             Close
           </Button>

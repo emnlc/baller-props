@@ -20,14 +20,14 @@ const ModifierFilters = (props: Props) => {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="bg-background-800 h-full text-sm font-semibold justify-between w-44 md:w-48 hover:bg-opacity-60"
+          className="bg-background-800 h-full text-sm font-semibold justify-between w-40 md:w-48 hover:bg-background-700 border border-background-600"
         >
-          Modifier Options
+          Modifiers
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="bg-background-900 text-white w-44 md:w-48 font-normal">
+      <PopoverContent className="bg-background-900 text-white w-40 md:w-48 font-normal">
         <div className="flex flex-col gap-2">
           <label className="flex rounded-sm justify-between items-center text-sm hover:bg-background-600 px-2">
             <span>Goblin</span>
@@ -59,7 +59,7 @@ const ModifierFilters = (props: Props) => {
             onClick={() => {
               setOpen(!open);
             }}
-            className="w-full text-xs hover:bg-background-700 transition-colors bg-background-800"
+            className="w-full text-xs hover:bg-background-700 transition-colors bg-background-800 border border-background-600"
           >
             Close
           </Button>

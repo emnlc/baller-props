@@ -15,6 +15,8 @@ type PlayerLogsResponse = {
   previous_season_logs: GameLog[];
 };
 
+import { HashLoader } from "react-spinners";
+
 const PlayerPage = () => {
   const location = useLocation();
 
@@ -69,7 +71,12 @@ const PlayerPage = () => {
     return <div>No player data available</div>;
   }
 
-  if (isLoading) return <div>Loading . . .</div>;
+  if (isLoading)
+    return (
+      <div className="md:container mb-16 mt-8 mx-4 justify-center items-center max-h-[100vh-25vh] md:mx-auto flex gap-2 ">
+        <HashLoader color="#0284c7" size={50} />
+      </div>
+    );
   if (isError) return <div>Error!</div>;
 
   const cleanTime = playerData.propsTime
@@ -111,7 +118,7 @@ const PlayerPage = () => {
       <div className="md:container mb-16 mt-8 mx-4 md:mx-auto flex flex-col gap-2 ">
         <div className="flex flex-col md:mx-0">
           <Link
-            className="transition-all font-bold flex bg-accent-500 w-fit px-4 py-1 rounded-lg hover:bg-opacity-80 mb-4 items-center justify-center"
+            className="transition-all font-bold flex border border-accent-400 bg-accent-500 w-fit px-4 py-1 rounded-lg hover:bg-accent-400 mb-4 items-center justify-center"
             to={"/nba"}
           >
             ← Back
@@ -127,13 +134,17 @@ const PlayerPage = () => {
           </h2>
         </div>
 
-        <div className="flex gap-2 xl:flex-row flex-col stats-container ">
+        <div className="flex gap-2 xl:flex-row flex-col stats-container">
           <StatsChart
             current_season_logs={current_season_logs}
             previous_season_logs={previous_season_logs}
             prop={playerData.propType}
             propLine={playerData.propLine}
             propOdd={playerData.propOdds}
+            opponent={getOpponentTeam(
+              playerData.gameTitle,
+              playerData.playerTeam
+            )}
           />
           <PlayerSidebar
             current_season_logs={current_season_logs}

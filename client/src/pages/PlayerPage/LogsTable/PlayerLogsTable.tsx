@@ -17,6 +17,7 @@ type Props = {
 const shortenedProps: Record<string, string> = {
   GAME_DATE: "Date",
   MATCHUP: "Opp",
+  Minutes: "MIN",
   Points: "PTS",
   Rebounds: "REB",
   Assists: "AST",
@@ -60,35 +61,37 @@ const PlayerLogsTable = (props: Props) => {
 
   return (
     <>
-      <Table className="bg-background-900 text-xs md:text-sm">
-        <TableHeader className="bg-background-800 text-center">
-          <TableRow>
-            {headers.map((header) => (
-              <TableHead className="text-center" key={header}>
-                {shortenedProps[header]}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody className="font-medium [&>*:nth-child(odd)]:bg-background-900 [&>*:nth-child(even)]:bg-background-950 ">
-          {props.logs
-            .slice()
-            .reverse()
-            .map((log, index) => (
-              <TableRow className="text-center" key={index}>
-                {headers.map((header) => (
-                  <TableCell className="py-4 md:py-6" key={header}>
-                    {header === "GAME_DATE" && log[header as keyof GameLog]
-                      ? formatDate(log[header as keyof GameLog] as string)
-                      : header === "MATCHUP" && log[header as keyof GameLog]
-                      ? formatOpponent(log[header as keyof GameLog] as string)
-                      : log[header as keyof GameLog] ?? "-"}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+      <div className="overflow-x-auto table-scrollbar rounded-xl overflow-clip">
+        <Table className="bg-background-900 text-xs md:text-sm w-full border border-background-600">
+          <TableHeader className="bg-background-800 text-center">
+            <TableRow>
+              {headers.map((header) => (
+                <TableHead className="text-center" key={header}>
+                  {shortenedProps[header]}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody className="font-medium [&>*:nth-child(odd)]:bg-background-900 [&>*:nth-child(even)]:bg-background-950">
+            {props.logs
+              .slice()
+              .reverse()
+              .map((log, index) => (
+                <TableRow className="text-center" key={index}>
+                  {headers.map((header) => (
+                    <TableCell className="py-4 md:py-6" key={header}>
+                      {header === "GAME_DATE" && log[header as keyof GameLog]
+                        ? formatDate(log[header as keyof GameLog] as string)
+                        : header === "MATCHUP" && log[header as keyof GameLog]
+                        ? formatOpponent(log[header as keyof GameLog] as string)
+                        : log[header as keyof GameLog] ?? "-"}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 };

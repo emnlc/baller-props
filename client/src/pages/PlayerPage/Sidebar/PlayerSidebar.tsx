@@ -22,7 +22,7 @@ const PlayerSidebar = (props: Props) => {
 
   return (
     <>
-      <div className="flex flex-col md:min-w-fit px-4 md:px-8 rounded-3xl bg-background-900">
+      <div className="flex flex-col md:min-w-fit px-4 md:px-8 rounded-3xl bg-background-900 border border-background-600">
         <div className="flex flex-row justify-between md:flex-col gap-4 pt-8">
           <h1 className="md:text-3xl font-bold">Quick Averages</h1>
           <h1 className="md:text-xl font-medium">{props.selected_prop}</h1>
