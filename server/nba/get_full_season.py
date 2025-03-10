@@ -22,6 +22,7 @@ def process_game_logs(player_id, season):
             # Extract game stats in reverse order
             for _, row in game_logs_df[::-1].iterrows():
                 current_game = {
+                    "Minutes": int(row["MIN"]),
                     "Points": int(row["PTS"]),
                     "FG Made": int(row["FGM"]),
                     "FG Attempted": int(row["FGA"]),

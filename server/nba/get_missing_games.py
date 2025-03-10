@@ -20,6 +20,7 @@ def get_missing_game_logs(player_id, date_from):
             if not game_logs_df.empty:
                 for _, row in game_logs_df[::-1].iterrows():
                     current_game = {
+                        "Minutes": int(row["MIN"]),
                         "Points": int(row["PTS"]),
                         "FG Made": int(row["FGM"]),
                         "FG Attempted": int(row["FGA"]),
@@ -91,7 +92,7 @@ def get_missing_games(supabase: Client, player_id, team):
                     "last_updated": current_date.isoformat(),
                     "team_tricode": team
                 }).eq("id", player_id).execute()
-                print(f"Successfully updated player ID {player_id}")
+                # print(f"Successfully updated player ID {player_id}")
             except Exception as e:
                 print(f"Error updating player ID {player_id}: {e}")
     
@@ -100,7 +101,7 @@ def get_missing_games(supabase: Client, player_id, team):
         supabase.table("NBA").update({
             "last_updated": current_date.isoformat()
         }).eq("id", player_id).execute()
-        print(f"Successfully updated player ID {player_id}")
+        # print(f"Successfully updated player ID {player_id}")
     except Exception as e:
         print(f"Error updating player ID {player_id}: {e}")
     

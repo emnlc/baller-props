@@ -45,7 +45,7 @@ def get_player_stats(supabase: Client, current_cache):
                     player_stats = defaultdict(lambda: defaultdict(lambda: {"lines": {}, "player_id": None}))             
                     players = data[game_title][team]
                     for player in players:
-                        print(f"checking: {player}")
+                        # print(f"checking: {player}")
                         
                         # CHECK IF PLAYER IS IN DATABASE
                         res = supabase.table("NBA").select("id").eq("player_name", player).execute()
