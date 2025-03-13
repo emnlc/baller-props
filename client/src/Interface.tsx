@@ -13,6 +13,9 @@ export interface GameLog {
   "Blks+Stls": number;
   Turnovers: number;
   MATCHUP: string;
+  Minutes: string;
+  GAME_DATE: string;
+  SeasonType: string;
 }
 
 export interface Game {

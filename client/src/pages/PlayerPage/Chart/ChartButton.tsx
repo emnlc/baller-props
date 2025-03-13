@@ -60,17 +60,6 @@ const ChartButton = (props: Props) => {
               <>
                 <span
                   className={`font-semibold text-xs md:text-sm ${
-                    avg > props.propLine
-                      ? "text-bpGreen"
-                      : avg === props.propLine
-                      ? "text-gray-300"
-                      : "text-bpRed"
-                  }`}
-                >
-                  Avg: {avg.toFixed(2)}
-                </span>
-                <span
-                  className={`font-semibold text-xs md:text-sm ${
                     hr > 50
                       ? "text-bpGreen"
                       : hr === 50
@@ -80,11 +69,30 @@ const ChartButton = (props: Props) => {
                 >
                   HR: {hr.toFixed(0)}%
                 </span>
+                <span
+                  className={`font-semibold text-xs md:text-sm ${
+                    avg > props.propLine
+                      ? "text-bpGreen"
+                      : avg === props.propLine
+                      ? "text-gray-300"
+                      : "text-bpRed"
+                  }`}
+                >
+                  Avg: {avg.toFixed(2)}
+                </span>
               </>
             ) : (
               <>
-                <span className={`font-semibold text-xs md:text-sm `}>-</span>
-                <span className={`font-semibold text-xs md:text-sm `}>-</span>
+                <span
+                  className={`font-semibold text-xs md:text-sm text-gray-300`}
+                >
+                  HR: N/A
+                </span>
+                <span
+                  className={`font-semibold text-xs md:text-sm text-gray-300`}
+                >
+                  Avg: N/A
+                </span>
               </>
             )}
           </button>
@@ -106,17 +114,6 @@ const ChartButton = (props: Props) => {
               <>
                 <span
                   className={`font-semibold text-xs md:text-sm ${
-                    avg > props.propLine
-                      ? "text-bpGreen"
-                      : avg === props.propLine
-                      ? "text-gray-300"
-                      : "text-bpRed"
-                  }`}
-                >
-                  Avg: {avg.toFixed(2)}
-                </span>
-                <span
-                  className={`font-semibold text-xs md:text-sm ${
                     hr > 50
                       ? "text-bpGreen"
                       : hr === 50
@@ -126,11 +123,30 @@ const ChartButton = (props: Props) => {
                 >
                   HR: {hr.toFixed(0)}%
                 </span>
+                <span
+                  className={`font-semibold text-xs md:text-sm ${
+                    avg > props.propLine
+                      ? "text-bpGreen"
+                      : avg === props.propLine
+                      ? "text-gray-300"
+                      : "text-bpRed"
+                  }`}
+                >
+                  Avg: {avg.toFixed(2)}
+                </span>
               </>
             ) : (
               <>
-                <span className={`font-semibold text-xs md:text-sm `}>-</span>
-                <span className={`font-semibold text-xs md:text-sm `}>-</span>
+                <span
+                  className={`font-semibold text-xs md:text-sm text-gray-300`}
+                >
+                  HR: N/A
+                </span>
+                <span
+                  className={`font-semibold text-xs md:text-sm text-gray-300`}
+                >
+                  Avg: N/A
+                </span>
               </>
             )}
           </button>
@@ -153,17 +169,6 @@ const ChartButton = (props: Props) => {
             <span>{props.title}</span>
             <span
               className={`font-semibold text-xs md:text-sm ${
-                avg > props.propLine
-                  ? "text-bpGreen"
-                  : avg === props.propLine || avg === -1
-                  ? "text-gray-300"
-                  : "text-bpRed"
-              }`}
-            >
-              {avg === -1 ? <>HR: N/A</> : <>Avg: {avg.toFixed(2)}</>}
-            </span>
-            <span
-              className={`font-semibold text-xs md:text-sm ${
                 hr > 50
                   ? "text-bpGreen"
                   : hr === 50 || hr === -1
@@ -172,6 +177,17 @@ const ChartButton = (props: Props) => {
               }`}
             >
               {hr === -1 ? <>Avg: N/A</> : <>HR: {hr.toFixed(0)}%</>}
+            </span>
+            <span
+              className={`font-semibold text-xs md:text-sm ${
+                avg > props.propLine
+                  ? "text-bpGreen"
+                  : avg === props.propLine || avg === -1
+                  ? "text-gray-300"
+                  : "text-bpRed"
+              }`}
+            >
+              {avg === -1 ? <>HR: N/A</> : <>Avg: {avg.toFixed(2)}</>}
             </span>
           </button>
         </>

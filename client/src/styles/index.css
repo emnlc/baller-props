@@ -18,24 +18,28 @@ body {
 }
 
 @layer utilities {
-  .table-scrollbar::-webkit-scrollbar {
+  .table-scrollbar::-webkit-scrollbar,
+  html::-webkit-scrollbar {
     width: 12px;
     height: 10px;
     border-radius: 100%;
   }
 
-  .table-scrollbar::-webkit-scrollbar-track {
+  .table-scrollbar::-webkit-scrollbar-track,
+  html::-webkit-scrollbar-track {
     border-radius: 100vh;
     background: #353535;
   }
 
-  .table-scrollbar::-webkit-scrollbar-thumb {
+  .table-scrollbar::-webkit-scrollbar-thumb,
+  html::-webkit-scrollbar-thumb {
     background: #202020;
     border-radius: 100vh;
     border: 3px solid #202020;
   }
 
-  .table-scrollbar::-webkit-scrollbar-thumb:hover {
+  .table-scrollbar::-webkit-scrollbar-thumb:hover,
+  html::-webkit-scrollbar-thumb:hover {
     background: #202020;
   }
 }
@@ -63,4 +67,12 @@ body {
   .game-title-mobile {
     display: block;
   }
+}
+
+#chart-container {
+  transition: background 0.5s ease;
+}
+
+#nba-props-table {
+  overscroll-behavior-y: none;
 }

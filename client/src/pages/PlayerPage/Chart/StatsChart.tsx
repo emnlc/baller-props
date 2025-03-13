@@ -1,13 +1,11 @@
 import { GameLog } from "@/Interface";
 import { Bar, BarChart, LabelList, ReferenceLine, Cell } from "recharts";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
 import { type ChartConfig } from "@/components/ui/chart";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+
+import CustomTooltip from "./ToolTip";
 
 type Props = {
   current_season_logs: GameLog[];
@@ -24,7 +22,7 @@ const StatsChart = (props: Props) => {
   const [filterRange, setFilterRange] = useState<number | null>(10);
   const [showPreviousSeason, setShowPreviousSeason] = useState(false);
   const [showH2H, setShowH2H] = useState(false);
-  const [propLine, setPropLine] = useState<number>(props.propLine); // Local state for live line adjustment
+  const [propLine, setPropLine] = useState<number>(props.propLine);
 
   const getH2HLogs = useCallback(
     (opponent: string) => {
@@ -35,10 +33,9 @@ const StatsChart = (props: Props) => {
 
       const h2hLogs = allLogs.filter((log) => log.MATCHUP.includes(opponent));
 
-      console.log(h2hLogs);
       return h2hLogs;
     },
-    [props.current_season_logs, props.previous_season_logs] // Dependencies for useCallback
+    [props.current_season_logs, props.previous_season_logs]
   );
 
   const filteredLogs = useMemo(() => {
@@ -85,6 +82,39 @@ const StatsChart = (props: Props) => {
 
   const propKey = props.prop || "";
 
+  const calculateHitRate = (
+    logs: GameLog[],
+    propLine: number,
+    propKey: string
+  ) => {
+    const hits = logs.filter((log) => {
+      const value = Number(log[propKey as keyof GameLog]);
+      return !isNaN(value) && value >= propLine;
+    }).length;
+
+    return hits;
+  };
+
+  useEffect(() => {
+    const hits = calculateHitRate(filteredLogs, propLine, propKey);
+    const total = filteredLogs.length;
+    const hitRate = total > 0 ? hits / total : 0;
+
+    const chartContainer = document.getElementById("chart-container");
+    if (chartContainer) {
+      if (hitRate > 0.5) {
+        chartContainer.style.background =
+          "linear-gradient(to top, #1a4c30, #171717)";
+      } else if (hitRate == 0.5) {
+        chartContainer.style.background =
+          "linear-gradient(to top, #525252 , #171717)";
+      } else {
+        chartContainer.style.background =
+          "linear-gradient(to top, #4c1213, #171717)";
+      }
+    }
+  }, [filteredLogs, propLine, propKey]);
+
   const getCombinedLogs = (count: number) => {
     const currentLogs = props.current_season_logs;
     const previousLogs = props.previous_season_logs;
@@ -99,7 +129,7 @@ const StatsChart = (props: Props) => {
 
   return (
     <>
-      <div className="flex flex-col w-full bg-background-900 rounded-3xl px-2 md:py-8 border border-background-600">
+      <div className="flex flex-col w-full bg-background-900 rounded-3xl md:pt-8 border overflow-clip border-background-600">
         {/* Button Controls */}
         <div className="flex flex-row px-2 md:px-8 gap-1 md:gap-2 pt-6 md:py-0 pb-2 md:pb-0 overflow-x-scroll md:overflow-hidden">
           {[5, 10, 15].map((range) => (
@@ -164,12 +194,12 @@ const StatsChart = (props: Props) => {
             <img
               src={`${
                 props.propOdd === "goblin"
-                  ? "goblin.png"
+                  ? "goblin-256.png"
                   : props.propOdd === "standard"
                   ? ""
-                  : "demon.png"
+                  : "demon-256.png"
               }`}
-              className="w-10"
+              className="ml-2 w-6"
               alt=""
             />
           </span>
@@ -187,7 +217,7 @@ const StatsChart = (props: Props) => {
         </div>
 
         {/* Chart Section */}
-        <div className="flex h-auto">
+        <div id="chart-container" className="flex h-auto pb-4 ">
           <ChartContainer
             config={chartConfig}
             className="min-h-[200px] max-h-[450px] w-full px-2 md:px-8"
@@ -198,24 +228,24 @@ const StatsChart = (props: Props) => {
               data={filteredLogs}
             >
               <ChartTooltip
+                position={{ y: 0 }}
                 cursor={{ fillOpacity: 0.2 }}
-                content={<ChartTooltipContent />}
+                content={<CustomTooltip prop={propKey} />}
               />
               <Bar dataKey={propKey} radius={5} minPointSize={4}>
                 {filteredLogs.map((entry, index) => {
                   const value = Number(entry[propKey as keyof GameLog]);
                   const color =
                     !isNaN(value) && value > propLine
-                      ? "#59FFA0"
+                      ? "#47cc80"
                       : value === propLine
-                      ? "gray"
-                      : "#CF293A";
+                      ? "#737373"
+                      : "#cc3134";
 
                   return <Cell key={`cell-${index}`} fill={color} />;
                 })}
                 {filteredLogs.length < 16 && (
                   <>
-                    {/* Keeping Your Label Formatting Logic */}
                     <LabelList
                       dataKey="MATCHUP"
                       position="bottom"
@@ -240,11 +270,11 @@ const StatsChart = (props: Props) => {
                   </>
                 )}
               </Bar>
-              {/* Line Updating without Full Chart Rerender */}
+
               <ReferenceLine
                 y={propLine}
                 stroke="#737373"
-                strokeWidth={2}
+                strokeWidth={1}
                 strokeDasharray="10 5"
               />
             </BarChart>

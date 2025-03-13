@@ -115,8 +115,8 @@ const PlayerPage = () => {
 
   return (
     <>
-      <div className="md:container mb-16 mt-8 mx-4 md:mx-auto flex flex-col gap-2 ">
-        <div className="flex flex-col md:mx-0">
+      <div className="md:container mb-16 mt-8 mx-4 sm:mx-auto flex flex-col gap-2 ">
+        <div className="flex flex-col">
           <Link
             className="transition-all font-bold flex border border-accent-400 bg-accent-500 w-fit px-4 py-1 rounded-lg hover:bg-accent-400 mb-4 items-center justify-center"
             to={"/nba"}

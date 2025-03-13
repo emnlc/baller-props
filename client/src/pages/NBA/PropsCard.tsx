@@ -143,9 +143,9 @@ const PropsCard = ({ sortedData }: Props) => {
                 <div className="font-bold mt-2 flex items-center min-h-8">
                   {row.propLine} {row.propType}{" "}
                   {row.propOdds === "goblin" ? (
-                    <img src="goblin.png" className="w-8" />
+                    <img src="goblin-256.png" className="w-6 ml-2" />
                   ) : row.propOdds === "demon" ? (
-                    <img src="demon.png" className="w-8" />
+                    <img src="demon-256.png" className="w-6 ml-2" />
                   ) : (
                     ""
                   )}
