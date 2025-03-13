@@ -69,7 +69,7 @@ export const toggleFilter = (
 
 // Handle prop selection
 export const handlePropSelection = (
-  selectedProps: string[],
+  _selectedProps: string[],
   setSelectedProps: React.Dispatch<React.SetStateAction<string[]>>,
   prop: string
 ) => {
@@ -97,7 +97,7 @@ export const handleDeselectAll = (
 
 // Handle game selection
 export const toggleGameSelection = (
-  selectedGames: string[],
+  _selectedGames: string[],
   setSelectedGames: React.Dispatch<React.SetStateAction<string[]>>,
   game: string
 ) => {
