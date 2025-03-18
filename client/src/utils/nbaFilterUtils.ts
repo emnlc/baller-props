@@ -55,9 +55,19 @@ export const getAvailableProps = (
 
 // Handle filter toggling
 export const toggleFilter = (
-  filterModifiers: { goblin: boolean; demon: boolean; standard: boolean },
+  filterModifiers: {
+    taco: boolean;
+    goblin: boolean;
+    demon: boolean;
+    standard: boolean;
+  },
   setFilterModifiers: React.Dispatch<
-    React.SetStateAction<{ goblin: boolean; demon: boolean; standard: boolean }>
+    React.SetStateAction<{
+      taco: boolean;
+      goblin: boolean;
+      demon: boolean;
+      standard: boolean;
+    }>
   >,
   filter: keyof typeof filterModifiers
 ) => {

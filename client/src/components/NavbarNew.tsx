@@ -27,7 +27,7 @@ const NavbarNew = () => {
       {/* Logo */}
       <Link
         to={"/"}
-        className="w-full text-3xl font-bold text-white hidden sm:block hover:text-accent-500 transition-colors"
+        className="text-3xl font-bold text-white hidden sm:block hover:text-accent-500 transition-colors"
       >
         Baller Props
       </Link>
@@ -38,12 +38,9 @@ const NavbarNew = () => {
       {/* Desktop Navigation */}
       <ul className="hidden md:flex items-center gap-4 font-semibold">
         {navItems.map((item) => (
-          <div
-            key={item.id}
-            className="flex duration-300 hover:text-black cursor-pointer"
-          >
+          <div key={item.id} className="flex cursor-pointer ">
             <Link
-              className="w-full px-4 py-2 rounded-lg hover:bg-accent-500 "
+              className="w-full px-4 py-2 rounded-lg transition-all hover:bg-accent-500 "
               onClick={handleNav}
               to={item.url}
             >

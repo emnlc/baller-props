@@ -25,6 +25,7 @@ import {
 } from "@/utils/nbaFilterUtils";
 
 interface FilterModifiers {
+  taco: boolean;
   goblin: boolean;
   demon: boolean;
   standard: boolean;

@@ -89,7 +89,12 @@ export const calculateL10Avg = (
 
 export const processGamesData = (
   gamesData: gamesData,
-  filterModifiers: { goblin: boolean; demon: boolean; standard: boolean },
+  filterModifiers: {
+    goblin: boolean;
+    demon: boolean;
+    standard: boolean;
+    taco: boolean;
+  },
   searchQuery: string,
   selectedGames: string[],
   selectedProps: string[],
@@ -163,7 +168,9 @@ export const processGamesData = (
           opponentTeam,
           propType: prop.details.stat_type,
           propLine: line,
-          propOdds: prop.details.odds_type,
+          propOdds: prop.details.discount_name
+            ? prop.details.discount_name
+            : prop.details.odds_type,
           propsTime: prop.details.start_time,
           propDiscountName: promo ? prop.details.discount_name : "",
           l10Avg,
@@ -193,6 +200,7 @@ export const processGamesData = (
       if (row.propOdds === "goblin") return filterModifiers.goblin;
       if (row.propOdds === "demon") return filterModifiers.demon;
       if (row.propOdds === "standard") return filterModifiers.standard;
+      if (row.propOdds === "taco") return filterModifiers.taco;
     })
     .filter((row) =>
       row.playerName.toLowerCase().includes(searchQuery.toLowerCase())

@@ -29,6 +29,7 @@ type Props = {
     propType: string;
     propLine: number;
     propOdds: string;
+    propDiscountName: string;
     l10Avg: number | null;
     diff: number;
     l5HitRate: number;
@@ -253,7 +254,13 @@ const PropsTable = ({
                       <TableCell>
                         <span className="flex flex-row gap-2 items-center min-w-fit">
                           {row.propLine}
-                          {row.propOdds === "goblin" ? (
+                          {row.propDiscountName ? (
+                            row.propDiscountName === "taco" ? (
+                              <img src="taco-96.png" className="w-8" alt="" />
+                            ) : (
+                              ""
+                            )
+                          ) : row.propOdds === "goblin" ? (
                             <img src="goblin-256.png" className="w-6" />
                           ) : row.propOdds === "demon" ? (
                             <img src="demon-256.png" className="w-6" />

@@ -20,6 +20,7 @@ type Props = {
     diff: number;
     h2h: number;
     season: number;
+    propDiscountName: string;
   }[];
   sortColumn:
     | "l10Avg"
@@ -142,7 +143,13 @@ const PropsCard = ({ sortedData }: Props) => {
 
                 <div className="font-bold mt-2 flex items-center min-h-8">
                   {row.propLine} {row.propType}{" "}
-                  {row.propOdds === "goblin" ? (
+                  {row.propDiscountName ? (
+                    row.propDiscountName === "taco" ? (
+                      <img src="taco-96.png" className="w-8 ml-2" alt="" />
+                    ) : (
+                      ""
+                    )
+                  ) : row.propOdds === "goblin" ? (
                     <img src="goblin-256.png" className="w-6 ml-2" />
                   ) : row.propOdds === "demon" ? (
                     <img src="demon-256.png" className="w-6 ml-2" />

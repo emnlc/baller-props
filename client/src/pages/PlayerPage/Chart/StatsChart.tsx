@@ -197,9 +197,11 @@ const StatsChart = (props: Props) => {
                   ? "goblin-256.png"
                   : props.propOdd === "standard"
                   ? ""
+                  : props.propOdd === "taco"
+                  ? "taco-96.png"
                   : "demon-256.png"
               }`}
-              className="ml-2 w-6"
+              className={`ml-2 ${props.propOdd === "taco" ? "w-8" : "w-6"}`}
               alt=""
             />
           </span>

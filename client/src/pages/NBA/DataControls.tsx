@@ -6,6 +6,7 @@ import ModifierFilters from "./ModifierFilters";
 import MobileFilters from "./MobileFilters";
 
 export interface FilterModifiers {
+  taco: boolean;
   goblin: boolean;
   demon: boolean;
   standard: boolean;

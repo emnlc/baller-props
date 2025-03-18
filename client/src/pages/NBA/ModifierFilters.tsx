@@ -8,8 +8,13 @@ import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
-  filterModifiers: { goblin: boolean; demon: boolean; standard: boolean };
-  toggleFilter: (filter: "demon" | "goblin" | "standard") => void;
+  filterModifiers: {
+    taco: boolean;
+    goblin: boolean;
+    demon: boolean;
+    standard: boolean;
+  };
+  toggleFilter: (filter: "taco" | "demon" | "goblin" | "standard") => void;
 };
 
 const ModifierFilters = (props: Props) => {
@@ -51,6 +56,14 @@ const ModifierFilters = (props: Props) => {
               type="checkbox"
               checked={props.filterModifiers.standard}
               onChange={() => props.toggleFilter("standard")}
+            />
+          </label>
+          <label className="flex rounded-sm justify-between items-center text-sm hover:bg-background-600 px-2">
+            <span>Taco</span>
+            <input
+              type="checkbox"
+              checked={props.filterModifiers.taco}
+              onChange={() => props.toggleFilter("taco")}
             />
           </label>
         </div>
