@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 const NavbarNew = () => {
   // State to manage the navbar's visibility
@@ -23,45 +24,46 @@ const NavbarNew = () => {
   const navItems = [{ id: 1, text: "NBA", url: "/nba" }];
 
   return (
-    <div className="md:container mx-4 md:mx-auto py-3 sm:py-6 flex flex-row justify-between gap-4 items-center z-50 ">
+    <div className="md:container mx-4 md:mx-auto my-4 sm:my-6 flex flex-row justify-between gap-4 items-center z-50 ">
       {/* Logo */}
       <Link
         to={"/"}
-        className="text-3xl font-bold text-white hidden sm:block hover:text-accent-500 transition-colors"
+        className="text-xl font-bold text-white hidden sm:block hover:text-accent-500 transition-colors"
       >
         Baller Props
       </Link>
       <Link to={"/"}>
-        <img src="bp-logo.svg" className="h-8 sm:hidden" alt="" />
+        <img src="bp-logo.svg" className="h-8 ml-2 sm:hidden" alt="" />
       </Link>
 
       {/* Desktop Navigation */}
-      <ul className="hidden md:flex items-center gap-4 font-semibold">
+      <div className="hidden md:flex items-center gap-4 font-semibold">
         {navItems.map((item) => (
-          <div key={item.id} className="flex cursor-pointer ">
-            <Link
-              className="w-full px-4 py-2 rounded-lg transition-all hover:bg-accent-500 "
-              onClick={handleNav}
-              to={item.url}
-            >
-              {item.text}
-            </Link>
-          </div>
+          <Button
+            key={item.id}
+            className="px-6 rounded-lg transition-all hover:bg-accent-500 "
+            onClick={handleNav}
+            size={"sm"}
+            asChild
+          >
+            <Link to={item.url}>{item.text}</Link>
+          </Button>
         ))}
-        <Link to={"/"}>
+
+        <Link className="flex" to={"/"}>
           <FontAwesomeIcon
-            className="text-4xl transition-colors hover:text-accent-500"
+            className="text-3xl transition-colors hover:text-accent-500"
             icon={faCircleUser}
           />
         </Link>
-      </ul>
+      </div>
 
       {/* Mobile Navigation Icon */}
       <div onClick={handleNav} className="block md:hidden">
         {nav ? (
-          <FontAwesomeIcon className="text-lg" icon={faXmark} />
+          <FontAwesomeIcon className="text-2xl mr-2" icon={faXmark} />
         ) : (
-          <FontAwesomeIcon className="text-lg" icon={faBars} />
+          <FontAwesomeIcon className="text-2xl mr-2" icon={faBars} />
         )}
       </div>
 

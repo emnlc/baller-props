@@ -76,3 +76,139 @@ body {
 #nba-props-table {
   overscroll-behavior-y: none;
 }
+
+/* 18273d */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    at right bottom,
+    rgb(0, 0, 0),
+    rgba(0, 0, 0, 0),
+    rgb(56, 189, 248)
+  );
+
+  -webkit-mask-image: radial-gradient(
+    ellipse 150% 100% at top,
+    rgba(0, 0, 0, 0.6) 30%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  mask-image: radial-gradient(
+    ellipse 150% 100% at top,
+    rgba(0, 0, 0, 0.45) 30%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  pointer-events: none;
+}
+
+.shadow-buttons {
+  position: relative;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms;
+  box-shadow: 0px 0px 25px 0px rgba(23, 70, 87, 0.4);
+}
+
+.shadow-buttons::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(10, 10, 10, 0),
+    rgb(14, 47, 61),
+    rgb(56, 189, 248),
+    rgb(14, 47, 61),
+    rgba(10, 10, 10, 0)
+  );
+}
+
+.shadow-buttons::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(10, 10, 10, 0),
+    rgb(14, 47, 61),
+    rgb(56, 189, 248),
+    rgb(14, 47, 61),
+    rgba(10, 10, 10, 0)
+  );
+  transition: width 300ms ease-in-out, left 300ms ease-in-out;
+}
+
+.shadow-buttons:hover {
+  color: white;
+  box-shadow: 0px 0px 20px 3px rgba(23, 70, 87, 0.5);
+}
+
+.shadow-buttons:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.black-and-white {
+  filter: grayscale(100%) brightness(0.6);
+}
+
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.timeline-item {
+  position: relative;
+  text-align: center;
+}
+
+.timeline-circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background-color: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid white;
+  font-size: 0.75rem;
+}
+
+.timeline-content {
+  margin-top: 0.5rem;
+  width: 10rem;
+}
+
+.timeline-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.timeline-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.border-gradient {
+  border-top: 1px solid transparent;
+  background: linear-gradient(
+    to right,
+    rgba(10, 10, 10, 0),
+    rgb(14, 47, 61),
+    rgb(56, 189, 248),
+    rgb(14, 47, 61),
+    rgba(10, 10, 10, 0)
+  );
+  background-size: 75% 1px;
+  background-repeat: no-repeat;
+  background-position: top center;
+}

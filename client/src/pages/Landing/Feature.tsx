@@ -1,59 +1,167 @@
-import useWindowSize from "@/hooks/isMobile";
+import { motion } from "framer-motion";
 
 function Feature() {
-  const isMobile = useWindowSize();
   return (
     <>
-      <section className=" text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
-            <div className="flex flex-col justify-center text-center md:text-left">
-              <h2 className="text-3xl font-bold mb-4">
-                Current Season Player Stats
-              </h2>
-              <p className="text-lg text-gray-300">
-                Quickly view
-                <span className="text-bpGreen"> player prop hit rates</span> for
-                players based on current season stats.{" "}
-                <span className="text-bpYellow">
-                  Last 10 game and H2H stats
-                </span>{" "}
-                also included.
-              </p>
-            </div>
-            <div className="md:px-4 ">
-              <img
-                src={`${
-                  isMobile
-                    ? "/LandingAssets/MobileView.png"
-                    : "/LandingAssets/DesktopView2.png"
-                }`}
-                alt="Current Season Player Stats"
-                className="w-full"
+      <div id="feature-section" className="my-16 flex flex-col gap-8 pt-16">
+        <section className="flex flex-col gap-8 md:flex-row ">
+          <h1 className="flex-1 text-3xl md:text-5xl font-bold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+            Stop the Guesswork. Close the Tabs.
+          </h1>
+          <p className="flex-1 text-lg font-medium text-background-400">
+            Decisions don’t have to be complicated. Baller Props gives you
+            real-time insights into player performance, hit rates, and game
+            trends — all in one place. No more bouncing between ESPN and other
+            websites or relying on gut feelings.{" "}
+            <span className="text-white">
+              Just clear, actionable data to help you make smarter, informed
+              picks with ease.
+            </span>
+          </p>
+        </section>
+
+        <section className="flex flex-col md:flex-row mt-16 gap-8">
+          <div className="flex-1 flex flex-col justify-between bg-background-900 border border-background-800 rounded-xl p-6 pb-12 md:py-12">
+            <div className="my-12 flex flex-row justify-around">
+              <motion.img
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                className="w-16 rounded-lg "
+                src="sportsbook/prizepicks.png"
+                alt=""
+              />
+              <motion.img
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                className="w-16 rounded-lg black-and-white "
+                src="sportsbook/underdog.png"
+                alt=""
+              />
+              <motion.img
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                className="w-16 rounded-lg black-and-white"
+                src="sportsbook/draftkings.png"
+                alt=""
               />
             </div>
-          </div>
-          <div className="grid md:grid-cols-2 gap-16 items-center mb-16">
-            <div className="flex flex-col justify-center text-center md:text-left">
-              <h2 className="text-3xl font-bold mb-4">Daily Props</h2>
-              <p className="text-lg text-gray-300">
-                Player props obtained through{" "}
-                <span className="text-[#8000FF]">PrizePicks</span> and update
-                regularly throught the day.
-              </p>
-            </div>
-            <div className="flex flex-col justify-center text-center md:text-left">
-              <h2 className="text-3xl font-bold mb-4">Historical Data</h2>
-              <p className="text-lg text-gray-300">
-                Historical data from the{" "}
-                <span className="text-bpYellow">last two seasons</span> for{" "}
-                <span className="text-bpGreen">each individual player</span>{" "}
-                corresponding to the selected player prop.
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                Integrated sportsbook
+              </h3>
+              <p className="text-background-400">
+                Currently, Baller Props integrates PrizePicks lines, with plans
+                to support additional sportsbooks in the future.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+
+          <div className="flex-1 flex flex-col md:flex-row bg-background-900 border border-background-800 rounded-xl px-6 py-12">
+            <div className="flex-1 mb-6 md:my-0 flex flex-row justify-around">
+              <ol className="relative border-s border-background-500 dark:border-gray-700">
+                <li className="mb-10 ms-4">
+                  <div className="absolute w-3 h-3 bg-bpGreenRange-200 rounded-full mt-1.5 -start-1.5 border border-background-500 dark:border-gray-900 dark:bg-gray-700"></div>
+                  <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                    February 2025
+                  </time>
+                  <h3 className="text-lg font-semibold ">NBA</h3>
+                </li>
+                <li className="mb-10 ms-4">
+                  <div className="absolute w-3 h-3 bg-bpRedRange-200 rounded-full mt-1.5 -start-1.5 border border-background-500 dark:border-gray-900 dark:bg-gray-700"></div>
+                  <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                    ETA: Mid May
+                  </time>
+                  <h3 className="text-lg font-semibold ">WNBA</h3>
+                </li>
+
+                <li className="mb-10 ms-4">
+                  <div className="absolute w-3 h-3 bg-bpRedRange-200 rounded-full mt-1.5 -start-1.5 border border-background-500 dark:border-gray-900 dark:bg-gray-700"></div>
+                  <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                    ETA: TBA
+                  </time>
+                  <h3 className="text-lg font-semibold ">MLB</h3>
+                </li>
+              </ol>
+            </div>
+
+            <div className="flex-1 flex flex-col gap-2 justify-center">
+              <h3 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                Supported Sports
+              </h3>
+              <p className="text-background-400">
+                Baller Props is regularly updated to support more sports.
+                Currently, NBA is supported, with plans to add WNBA and MLB in
+                the near future.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid grid-cols-1 md:grid-cols-5 gap-y-8 md:gap-8">
+          <div className="col-span-1 md:col-span-2 flex-1 flex flex-col gap-8 bg-background-900 border border-background-800 rounded-xl p-6 pb-12 md:py-12">
+            <div className="flex-1">
+              <img
+                src="bars.png"
+                className="rounded-xl border border-background-800"
+                alt=""
+              />
+            </div>
+
+            <div className="flex-1 flex flex-col gap-2">
+              <h1 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                Historical data
+              </h1>
+              <p className="text-background-400">
+                Leverage past performance and matchup insights to spot winning
+                player props.
+              </p>
+            </div>
+          </div>
+
+          <div className="col-span-2 gap-8 flex-1 flex flex-col bg-background-900 border border-background-800 rounded-xl p-6 pb-12 md:py-12">
+            <div className="flex-1">
+              <img
+                src="averages.png"
+                className="rounded-2xl border border-background-800"
+                alt=""
+              />
+            </div>
+
+            <div className="flex-1 flex flex-col gap-2">
+              <h1 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                See How the Line Stacks Up
+              </h1>
+              <p className="text-background-400">
+                Compare a player’s prop line against their recent averages to
+                see if there's value. Identify trends, over/under differentials,
+                and smart opportunities with ease.
+              </p>
+            </div>
+          </div>
+
+          <div className="col-span-1 flex flex-col gap-8">
+            <div className="bg-background-900 border border-background-800 rounded-xl flex-1 p-6 flex flex-col justify-center gap-2">
+              <h1 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                Daily Lines
+              </h1>
+              <p className="text-background-400">
+                Player prop lines are updated every ten minutes, ensuring you
+                always have the latest data available.
+              </p>
+            </div>
+
+            <div className="bg-background-900 border border-background-800 rounded-xl flex-1 p-6 flex flex-col justify-center gap-2">
+              <h1 className="text-lg font-semibold bg-gradient-to-br from-white to-background-400 text-transparent bg-clip-text">
+                Modifier Filters
+              </h1>
+              <p className="text-background-400">
+                Filter lines for goblin and demons or sort based on L5, L10, L15
+                games, current season, last season, or H2H stats.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   );
 }
