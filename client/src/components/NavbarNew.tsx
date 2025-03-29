@@ -50,7 +50,7 @@ const NavbarNew = () => {
           </Button>
         ))}
 
-        <Link className="flex" to={"/"}>
+        <Link className="flex" to={"/account"}>
           <FontAwesomeIcon
             className="text-3xl transition-colors hover:text-accent-500"
             icon={faCircleUser}
@@ -104,7 +104,7 @@ const NavbarNew = () => {
             <FontAwesomeIcon className="text-2xl" icon={faHome} />
           </Link>
 
-          <Link to={"/"}>
+          <Link to={"/account"}>
             <FontAwesomeIcon className="text-2xl" icon={faCircleUser} />
           </Link>
         </div>

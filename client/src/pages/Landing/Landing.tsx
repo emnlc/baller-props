@@ -22,13 +22,21 @@ const Landing = () => {
             <Link to={"/"} className="text-xl font-bold sm:block">
               Baller Props
             </Link>
-            <Button
-              asChild
-              size={"sm"}
-              className="shadow-buttons bg-black text-background-400 rounded-full px-4"
-            >
-              <Link to={"/nba"}>Get started</Link>
-            </Button>
+            <div className="flex flex-row items-center text-sm gap-4 md:gap-8">
+              <Link
+                className="font-medium text-background-400 hover:text-white transition-all"
+                to={"/login"}
+              >
+                Login
+              </Link>
+              <Button
+                asChild
+                size={"sm"}
+                className="shadow-buttons bg-black text-background-400 rounded-full px-4"
+              >
+                <Link to={"/signup"}>Get started</Link>
+              </Button>
+            </div>
           </nav>
 
           {/* Hero Section */}

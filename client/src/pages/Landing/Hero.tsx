@@ -63,7 +63,7 @@ const Hero = () => {
             size={"lg"}
             className="shadow-buttons bg-black text-background-400 rounded-full"
           >
-            <Link to={"/nba"}>Get started</Link>
+            <Link to={"/signup"}>Get started</Link>
           </Button>
         </motion.div>
 

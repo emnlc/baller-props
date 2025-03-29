@@ -212,3 +212,22 @@ body {
   background-repeat: no-repeat;
   background-position: top center;
 }
+#providers-divider {
+  display: flex;
+  flex-direction: row;
+}
+#providers-divider:before,
+#providers-divider:after {
+  content: "";
+  flex: 1 1;
+  border-bottom: 1px solid;
+  margin: auto;
+}
+
+#providers-divider:before {
+  margin-right: 10px;
+}
+
+#providers-divider:after {
+  margin-left: 10px;
+}
