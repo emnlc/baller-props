@@ -50,6 +50,7 @@ def process_game_logs(player_id, season):
     
     except Exception as e:
         print(f"Error fetching game logs for player {player_id}: {e}")
+        return
     
     # Output result
     return full_game_logs
